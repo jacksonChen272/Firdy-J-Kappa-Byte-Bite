@@ -335,12 +335,12 @@
     </script>
     
     <!-- AI 助手 -->
-    <div id="aiAssistant" class="fixed bottom-8 right-8 z-50 no-print">
+    <div id="aiAssistant" class="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-50 no-print">
         <button onclick="toggleChat()" class="bg-indigo-600 hover:bg-indigo-700 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-110 active:scale-95 btn-pulse">
             <span class="text-2xl">🤖</span>
         </button>
         
-        <div id="chatWindow" class="hidden absolute bottom-20 right-0 w-80 md:w-96 h-[500px] bg-white rounded-3xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden chat-animate">
+        <div id="chatWindow" class="hidden fixed md:absolute bottom-24 md:bottom-20 left-4 right-4 md:left-auto md:right-0 w-auto md:w-96 h-[500px] max-h-[70vh] md:max-h-none bg-white rounded-3xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden chat-animate">
             <!-- 聊天標頭 -->
             <div class="bg-indigo-600 p-4 text-white flex justify-between items-center">
                 <div class="flex items-center gap-3">

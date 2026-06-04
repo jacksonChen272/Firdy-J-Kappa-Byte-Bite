@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RND-006 研發數據決策系統 PRO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+        body { font-family: 'Noto+Sans+TC', sans-serif; background-color: #f1f5f9; }
+        .tag-A { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .tag-B { background: #fef9c3; color: #854d0e; border: 1px solid #fef08a; }
+        .tag-C { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .data-table tr:hover { background-color: #f8fafc; }
+        .clean-report { animation: slideIn 0.5s ease-out; }
+        @keyframes slideIn { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @media print { .no-print { display: none !important; } body { background: white; } }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <!-- 頂部導航 -->
+        <header class="mb-8 bg-white p-6 rounded-3xl shadow-sm border border-slate-200 no-print">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div>
+                    <h1 class="text-3xl font-black text-slate-800 tracking-tight flex items-center gap-2">
+                        <span class="text-indigo-600">🧪</span> RND-006 研發決策系統
+                    </h1>
+                    <p class="text-slate-400 text-sm mt-1">內建智慧清洗引擎：自動過濾無效、重複及異常數據</p>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="document.getElementById('fileInput').click()" class="bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-indigo-700 transition-all flex items-center gap-2">
+                        <span>📁 匯入並自動清洗</span>
+                    </button>
+                    <input type="file" id="fileInput" accept=".csv" class="hidden" onchange="handleFileUpload(event)">
+                    <button onclick="window.print()" class="bg-white text-slate-700 border border-slate-200 px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-50 transition-all">
+                        🖨️ 生成摘要報告
+                    </button>
+                </div>
+            </div>
+
+            <!-- 數據清洗報告區 (動態顯示) -->
+            <div id="cleanReport" class="hidden mt-6 p-4 bg-emerald-50 border border-emerald-100 rounded-2xl clean-report">
+                <div class="flex items-center gap-3">
+                    <span class="text-emerald-600 font-bold">✨ 數據清洗完成：</span>
+                    <span id="cleanDetail" class="text-emerald-700 text-sm"></span>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 pt-6 border-t border-slate-100">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">1. 選擇原始原料</label>
+                    <select id="rawSelect" onchange="updateDashboard()" class="w-full p-3 bg-slate-50 border-2 border-transparent focus:border-indigo-500 rounded-xl font-bold text-slate-700 outline-none transition-all">
+                        <option value="">-- 請先匯入資料 --</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">2. 原始單位成本 ($)</label>
+                    <input type="number" id="baseCost" value="300" oninput="updateDashboard()" class="w-full p-3 bg-slate-50 border-2 border-transparent focus:border-indigo-500 rounded-xl font-bold text-slate-700 outline-none transition-all">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">3. 預計年採購量</label>
+                    <input type="number" id="annualVolume" value="1000" oninput="updateDashboard()" class="w-full p-3 bg-slate-50 border-2 border-transparent focus:border-indigo-500 rounded-xl font-bold text-slate-700 outline-none transition-all">
+                </div>
+            </div>
+        </header>
+
+        <!-- 看板與圖表 -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div class="card bg-indigo-600 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden flex flex-col justify-between">
+                <div>
+                    <h3 class="text-indigo-200 text-xs font-bold uppercase mb-4 tracking-widest">🏆 綜合評定最優</h3>
+                    <div id="bestResult" class="text-4xl font-black mb-2">--</div>
+                    <p id="bestDetail" class="text-indigo-100 text-sm opacity-80 italic">數據已清洗，結果準確</p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-indigo-500/50">
+                    <span class="text-xs text-indigo-200">潛在年節省</span>
+                    <div id="bestSavings" class="text-2xl font-black">$0</div>
+                </div>
+            </div>
+
+            <div class="card bg-white rounded-3xl p-8 border border-slate-200 shadow-sm relative overflow-hidden text-slate-800 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-slate-400 text-xs font-bold uppercase mb-4 tracking-widest">💰 最低成本方案</h3>
+                    <div id="cheapResult" class="text-4xl font-black mb-2 text-emerald-600">--</div>
+                    <p id="cheapDetail" class="text-slate-500 text-sm italic">自動排除成本異常值</p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-slate-100">
+                    <span class="text-xs text-slate-400">最大年節省</span>
+                    <div id="cheapSavings" class="text-2xl font-black text-emerald-600">$0</div>
+                </div>
+            </div>
+
+            <div class="card bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+                <h3 class="text-slate-400 text-xs font-bold uppercase mb-2 tracking-widest">📊 成本與風味分布</h3>
+                <div class="h-48"><canvas id="scatterChart"></canvas></div>
+            </div>
+        </div>
+
+        <!-- 數據表格 -->
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden mb-8">
+            <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-4">
+                    <span class="font-black text-slate-700 tracking-tight">清洗後有效測試紀錄</span>
+                    <span id="statCount" class="px-3 py-1 bg-indigo-100 text-indigo-600 rounded-full text-xs font-bold">0 筆</span>
+                </div>
+                <div class="relative w-full md:w-64 no-print">
+                    <input type="text" id="searchInput" oninput="updateDashboard()" placeholder="搜尋替代原料..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm outline-none focus:border-indigo-500 transition-all">
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-50/80">
+                        <tr>
+                            <th class="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider cursor-pointer hover:text-indigo-600" onclick="setSort('sub')">替代原料 ⇅</th>
+                            <th class="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-center cursor-pointer hover:text-indigo-600" onclick="setSort('impact')">風味影響 ⇅</th>
+                            <th class="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-center cursor-pointer hover:text-indigo-600" onclick="setSort('suggest')">決策建議 ⇅</th>
+                            <th class="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right cursor-pointer hover:text-indigo-600" onclick="setSort('cost')">單位成本 ⇅</th>
+                            <th class="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right">年節省預算</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" class="divide-y divide-slate-100 text-sm"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allData = [];
+        let currentSort = { key: 'suggest', asc: true };
+        let chartInstance = null;
+        const scoreMap = { 'A': 1, 'B': 2, 'C': 3 };
+
+        // 智慧清洗與標準化邏輯
+        function normalizeLabel(v) {
+            if (!v) return 'A';
+            const s = v.toString().toUpperCase().trim();
+            if (s.includes('1') || s.includes('A')) return 'A';
+            if (s.includes('2') || s.includes('B')) return 'B';
+            if (s.includes('3') || s.includes('C')) return 'C';
+            return 'A';
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => parseAndCleanCsv(e.target.result);
+            reader.readAsText(file);
+        }
+
+        function parseAndCleanCsv(csv) {
+            const lines = csv.replace(/^\uFEFF/, '').split(/\r?\n/).filter(l => l.trim());
+            if (lines.length < 2) return;
+
+            const headers = lines[0].split(',').map(h => h.trim());
+            const mapping = {};
+            headers.forEach((h, i) => {
+                if (/原料|raw/i.test(h) && !/替代/i.test(h)) mapping.raw = i;
+                else if (/替代/i.test(h) || /sub/i.test(h)) mapping.sub = i;
+                else if (/風味|impact/i.test(h)) mapping.impact = i;
+                else if (/成本|cost/i.test(h)) mapping.cost = i;
+                else if (/建議|suggest/i.test(h)) mapping.suggest = i;
+            });
+
+            let rawCount = 0, emptyCount = 0, duplicateCount = 0, invalidCostCount = 0;
+            const seen = new Set();
+            
+            const cleaned = [];
+            lines.slice(1).forEach(line => {
+                rawCount++;
+                const cols = line.split(',').map(c => c.trim());
+                
+                // 1. 檢查必要欄位是否為空
+                const rawVal = cols[mapping.raw], subVal = cols[mapping.sub];
+                if (!rawVal || !subVal) { emptyCount++; return; }
+
+                // 2. 處理成本 (清洗非數字字元並檢查有效性)
+                const costStr = cols[mapping.cost] || "0";
+                const costVal = parseFloat(costStr.replace(/[^\d.-]/g, ''));
+                if (isNaN(costVal) || costVal <= 0) { invalidCostCount++; return; }
+
+                // 3. 標準化標籤
+                const impactVal = normalizeLabel(cols[mapping.impact]);
+                const suggestVal = normalizeLabel(cols[mapping.suggest]);
+
+                // 4. 去重檢查 (基於原料、替代、成本、標籤的唯一組合)
+                const fingerprint = `${rawVal}|${subVal}|${costVal}|${impactVal}|${suggestVal}`;
+                if (seen.has(fingerprint)) { duplicateCount++; return; }
+                seen.add(fingerprint);
+
+                cleaned.push({
+                    raw: rawVal,
+                    sub: subVal,
+                    impact: impactVal,
+                    suggest: suggestVal,
+                    cost: costVal
+                });
+            });
+
+            allData = cleaned;
+            showCleanReport(rawCount, emptyCount, duplicateCount, invalidCostCount);
+            initSelects();
+            updateDashboard();
+        }
+
+        function showCleanReport(total, empty, dup, inv) {
+            const report = document.getElementById('cleanReport');
+            const detail = document.getElementById('cleanDetail');
+            report.classList.remove('hidden');
+            detail.innerText = `總讀取 ${total} 筆，排除空值 ${empty} 筆、重複項 ${dup} 筆、成本異常 ${inv} 筆。最終保留 ${allData.length} 筆有效決策數據。`;
+        }
+
+        function initSelects() {
+            const select = document.getElementById('rawSelect');
+            const raws = [...new Set(allData.map(d => d.raw))].sort();
+            select.innerHTML = '<option value="">-- 選擇原料 --</option>';
+            raws.forEach(r => select.add(new Option(r, r)));
+        }
+
+        function updateDashboard() {
+            const target = document.getElementById('rawSelect').value;
+            const baseCost = parseFloat(document.getElementById('baseCost').value) || 0;
+            const volume = parseFloat(document.getElementById('annualVolume').value) || 0;
+            const search = document.getElementById('searchInput').value.toLowerCase();
+
+            if (!target) return;
+
+            let list = allData.filter(d => d.raw === target);
+            if (search) list = list.filter(d => d.sub.toLowerCase().includes(search));
+
+            list.sort((a, b) => {
+                let va = a[currentSort.key], vb = b[currentSort.key];
+                if (currentSort.key === 'impact' || currentSort.key === 'suggest') {
+                    va = scoreMap[a[currentSort.key]]; vb = scoreMap[b[currentSort.key]];
+                }
+                return currentSort.asc ? (va > vb ? 1 : -1) : (va < vb ? 1 : -1);
+            });
+
+            renderUI(list, baseCost, volume);
+            renderChart(list);
+        }
+
+        function renderUI(list, baseCost, volume) {
+            const body = document.getElementById('tableBody');
+            body.innerHTML = '';
+            document.getElementById('statCount').innerText = `${list.length} 筆`;
+
+            list.forEach(d => {
+                const saving = (baseCost - d.cost) * volume;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="p-4 font-bold text-slate-700">${d.sub}</td>
+                    <td class="p-4 text-center"><span class="px-3 py-1 rounded-full text-[10px] font-black tag-${d.impact}">等級 ${d.impact}</span></td>
+                    <td class="p-4 text-center"><span class="px-3 py-1 rounded-full text-[10px] font-black tag-${d.suggest}">建議 ${d.suggest}</span></td>
+                    <td class="p-4 text-right font-mono font-bold">$${d.cost.toFixed(1)}</td>
+                    <td class="p-4 text-right font-mono font-black ${saving >= 0 ? 'text-emerald-600' : 'text-rose-500'}">
+                        $${Math.round(saving).toLocaleString()}
+                    </td>
+                `;
+                body.appendChild(tr);
+            });
+
+            if (list.length > 0) {
+                const top = [...list].sort((a, b) => scoreMap[a.suggest] - scoreMap[b.suggest] || a.cost - b.cost)[0];
+                document.getElementById('bestResult').innerText = top.sub;
+                document.getElementById('bestSavings').innerText = `$${Math.round((baseCost - top.cost) * volume).toLocaleString()}`;
+
+                const cheap = [...list].sort((a, b) => a.cost - b.cost)[0];
+                document.getElementById('cheapResult').innerText = cheap.sub;
+                document.getElementById('cheapSavings').innerText = `$${Math.round((baseCost - cheap.cost) * volume).toLocaleString()}`;
+            }
+        }
+
+        function renderChart(list) {
+            const ctx = document.getElementById('scatterChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+            chartInstance = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: '替代方案',
+                        data: list.map(d => ({ x: d.cost, y: scoreMap[d.impact], label: d.sub })),
+                        backgroundColor: '#6366f1'
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: { reverse: true, min: 0.5, max: 3.5, ticks: { callback: v => ['', 'A', 'B', 'C'][v] } }
+                    },
+                    plugins: { tooltip: { callbacks: { label: (ctx) => `${ctx.raw.label}: $${ctx.raw.x}` } } }
+                }
+            });
+        }
+
+        function setSort(key) {
+            if (currentSort.key === key) currentSort.asc = !currentSort.asc;
+            else { currentSort.key = key; currentSort.asc = true; }
+            updateDashboard();
+        }
+    </script>
+</body>
+</html>

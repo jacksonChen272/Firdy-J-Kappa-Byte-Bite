@@ -28,7 +28,7 @@
                     <h1 class="text-3xl font-black text-slate-800 tracking-tight flex items-center gap-2">
                         <span class="text-indigo-600">🧪</span> RND-006 研發決策系統
                     </h1>
-                    <p class="text-slate-400 text-sm mt-1">內建智慧清洗引擎：自動過濾無效、重複及異常數據</p>
+                    <p class="text-slate-400 text-sm mt-1">數據已預載：RND-006 (共 89 筆)：自動過濾無效、重複及異常數據</p>
                 </div>
                 <div class="flex flex-wrap gap-3">
                     <button onclick="document.getElementById('fileInput').click()" class="bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-indigo-700 transition-all flex items-center gap-2">
@@ -128,7 +128,7 @@
     </div>
 
     <script>
-        let allData = [];
+        let allData = [{"raw":"食用油","sub":"番茄","impact":"C","suggest":"A","cost":194.2},{"raw":"番茄","sub":"醬油","impact":"B","suggest":"B","cost":219},{"raw":"洋蔥","sub":"馬鈴薯","impact":"B","suggest":"A","cost":274.9},{"raw":"紅蘿蔔","sub":"起司","impact":"A","suggest":"B","cost":27.3},{"raw":"起司","sub":"馬鈴薯","impact":"B","suggest":"A","cost":127.8},{"raw":"起司","sub":"鮭魚","impact":"C","suggest":"B","cost":289},{"raw":"番茄","sub":"牛奶","impact":"A","suggest":"B","cost":330.7},{"raw":"紅蘿蔔","sub":"奶油","impact":"A","suggest":"A","cost":96.3},{"raw":"奶油","sub":"豬絞肉","impact":"A","suggest":"A","cost":105.1},{"raw":"蝦仁","sub":"麵粉","impact":"C","suggest":"A","cost":329.5},{"raw":"奶油","sub":"雞胸肉","impact":"C","suggest":"C","cost":486.4},{"raw":"紅蘿蔔","sub":"洋蔥","impact":"C","suggest":"C","cost":430.2},{"raw":"雞蛋","sub":"白米","impact":"B","suggest":"C","cost":408.2},{"raw":"砂糖","sub":"白米","impact":"B","suggest":"C","cost":181.3},{"raw":"馬鈴薯","sub":"雞蛋","impact":"A","suggest":"A","cost":181.6},{"raw":"豬絞肉","sub":"醬油","impact":"C","suggest":"C","cost":134.9},{"raw":"雞胸肉","sub":"紅蘿蔔","impact":"B","suggest":"A","cost":338.7},{"raw":"豆腐","sub":"菇類","impact":"C","suggest":"B","cost":384.4},{"raw":"起司","sub":"洋蔥","impact":"C","suggest":"C","cost":319.3},{"raw":"起司","sub":"雞蛋","impact":"B","suggest":"B","cost":385.3},{"raw":"砂糖","sub":"馬鈴薯","impact":"A","suggest":"A","cost":62.2},{"raw":"食用油","sub":"番茄","impact":"A","suggest":"C","cost":326.4},{"raw":"菇類","sub":"鮭魚","impact":"A","suggest":"A","cost":306.9},{"raw":"豬絞肉","sub":"豬絞肉","impact":"C","suggest":"A","cost":354.5},{"raw":"白米","sub":"起司","impact":"A","suggest":"B","cost":237.9},{"raw":"牛奶","sub":"蝦仁","impact":"A","suggest":"A","cost":410.5},{"raw":"馬鈴薯","sub":"雞蛋","impact":"C","suggest":"A","cost":375},{"raw":"鮭魚","sub":"起司","impact":"C","suggest":"B","cost":343.8},{"raw":"起司","sub":"番茄","impact":"B","suggest":"C","cost":82.9},{"raw":"醬油","sub":"高麗菜","impact":"B","suggest":"A","cost":434.4},{"raw":"白米","sub":"砂糖","impact":"B","suggest":"B","cost":102.4},{"raw":"雞胸肉","sub":"鮭魚","impact":"B","suggest":"C","cost":27.3},{"raw":"豬絞肉","sub":"起司","impact":"A","suggest":"C","cost":182.2},{"raw":"砂糖","sub":"醬油","impact":"A","suggest":"C","cost":53.2},{"raw":"蝦仁","sub":"蝦仁","impact":"B","suggest":"A","cost":432.8},{"raw":"砂糖","sub":"洋蔥","impact":"A","suggest":"A","cost":64},{"raw":"紅蘿蔔","sub":"蝦仁","impact":"A","suggest":"B","cost":350.7},{"raw":"奶油","sub":"馬鈴薯","impact":"A","suggest":"C","cost":384.6},{"raw":"雞蛋","sub":"紅蘿蔔","impact":"A","suggest":"C","cost":235.2},{"raw":"麵粉","sub":"雞胸肉","impact":"A","suggest":"B","cost":477},{"raw":"食用油","sub":"鮭魚","impact":"B","suggest":"C","cost":139.9},{"raw":"雞蛋","sub":"牛奶","impact":"C","suggest":"A","cost":214.3},{"raw":"鮭魚","sub":"牛奶","impact":"C","suggest":"A","cost":497.6},{"raw":"鮭魚","sub":"豬絞肉","impact":"C","suggest":"C","cost":40.4},{"raw":"鮭魚","sub":"菇類","impact":"B","suggest":"B","cost":446.8},{"raw":"砂糖","sub":"菇類","impact":"A","suggest":"A","cost":496.4},{"raw":"白米","sub":"醬油","impact":"B","suggest":"B","cost":463.8},{"raw":"蝦仁","sub":"麵粉","impact":"C","suggest":"A","cost":186},{"raw":"洋蔥","sub":"番茄","impact":"B","suggest":"A","cost":41.8},{"raw":"砂糖","sub":"雞蛋","impact":"B","suggest":"B","cost":108.6},{"raw":"醬油","sub":"鮭魚","impact":"A","suggest":"A","cost":121.5},{"raw":"牛奶","sub":"奶油","impact":"B","suggest":"C","cost":429.6},{"raw":"豆腐","sub":"醬油","impact":"A","suggest":"A","cost":314.4},{"raw":"食用油","sub":"洋蔥","impact":"A","suggest":"B","cost":277.6},{"raw":"菇類","sub":"馬鈴薯","impact":"C","suggest":"C","cost":112.8},{"raw":"馬鈴薯","sub":"番茄","impact":"B","suggest":"B","cost":438.6},{"raw":"豆腐","sub":"蝦仁","impact":"C","suggest":"B","cost":354.5},{"raw":"起司","sub":"洋蔥","impact":"B","suggest":"B","cost":272.9},{"raw":"番茄","sub":"奶油","impact":"B","suggest":"C","cost":223.1},{"raw":"麵粉","sub":"白米","impact":"C","suggest":"C","cost":431.2},{"raw":"番茄","sub":"鮭魚","impact":"A","suggest":"B","cost":89.9},{"raw":"麵粉","sub":"醬油","impact":"A","suggest":"B","cost":380.3},{"raw":"醬油","sub":"雞蛋","impact":"A","suggest":"C","cost":278.6},{"raw":"番茄","sub":"白米","impact":"A","suggest":"A","cost":89.2},{"raw":"奶油","sub":"起司","impact":"A","suggest":"C","cost":381.4},{"raw":"起司","sub":"豬絞肉","impact":"B","suggest":"C","cost":148.8},{"raw":"鮭魚","sub":"食用油","impact":"A","suggest":"B","cost":94},{"raw":"奶油","sub":"豬絞肉","impact":"A","suggest":"C","cost":270.1},{"raw":"高麗菜","sub":"馬鈴薯","impact":"A","suggest":"A","cost":323.3},{"raw":"鮭魚","sub":"紅蘿蔔","impact":"A","suggest":"B","cost":447.3},{"raw":"砂糖","sub":"菇類","impact":"B","suggest":"A","cost":282.3},{"raw":"豬絞肉","sub":"紅蘿蔔","impact":"C","suggest":"C","cost":213.2},{"raw":"蝦仁","sub":"豆腐","impact":"A","suggest":"B","cost":390.1},{"raw":"紅蘿蔔","sub":"番茄","impact":"B","suggest":"A","cost":313.5},{"raw":"高麗菜","sub":"牛奶","impact":"B","suggest":"A","cost":346.2},{"raw":"番茄","sub":"豆腐","impact":"C","suggest":"B","cost":254.7},{"raw":"雞蛋","sub":"雞蛋","impact":"C","suggest":"B","cost":447.6},{"raw":"雞胸肉","sub":"麵粉","impact":"B","suggest":"C","cost":364.5},{"raw":"紅蘿蔔","sub":"麵粉","impact":"C","suggest":"B","cost":223.8},{"raw":"紅蘿蔔","sub":"番茄","impact":"B","suggest":"C","cost":487.9},{"raw":"高麗菜","sub":"醬油","impact":"A","suggest":"B","cost":373.6},{"raw":"白米","sub":"高麗菜","impact":"C","suggest":"C","cost":281.7},{"raw":"鮭魚","sub":"醬油","impact":"A","suggest":"A","cost":387.4},{"raw":"紅蘿蔔","sub":"鮭魚","impact":"C","suggest":"B","cost":384.1},{"raw":"番茄","sub":"番茄","impact":"C","suggest":"B","cost":302.2},{"raw":"洋蔥","sub":"食用油","impact":"A","suggest":"B","cost":479.5},{"raw":"醬油","sub":"菇類","impact":"A","suggest":"A","cost":145.7},{"raw":"番茄","sub":"高麗菜","impact":"A","suggest":"C","cost":126.1},{"raw":"紅蘿蔔","sub":"蝦仁","impact":"A","suggest":"B","cost":350.7}];
         let currentSort = { key: 'suggest', asc: true };
         let chartInstance = null;
         const scoreMap = { 'A': 1, 'B': 2, 'C': 3 };
@@ -301,5 +301,27 @@
             updateDashboard();
         }
     </script>
+
+    <script>
+        // 強制執行初始化
+        (function() {
+            const checkAndInit = () => {
+                if (typeof initSelects === "function" && typeof allData !== "undefined" && allData.length > 0) {
+                    initSelects();
+                    // 預設選擇第一個原料
+                    const select = document.getElementById('rawSelect');
+                    if (select && select.options.length > 1) {
+                        select.selectedIndex = 1; 
+                        updateDashboard();
+                    }
+                    console.log("預載數據初始化成功");
+                } else {
+                    setTimeout(checkAndInit, 100);
+                }
+            };
+            checkAndInit();
+        })();
+    </script>
+    
 </body>
 </html>

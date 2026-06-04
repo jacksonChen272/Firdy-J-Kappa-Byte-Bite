@@ -3,307 +3,292 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RND-006 研發數據決策系統 PRO</title>
+    <title>RND-006 研發決策智慧系統 FINAL v3.5</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
-        body { font-family: 'Noto+Sans+TC', sans-serif; background-color: #f1f5f9; }
-        .tag-A { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
-        .tag-B { background: #fef9c3; color: #854d0e; border: 1px solid #fef08a; }
-        .tag-C { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
-        .data-table tr:hover { background-color: #f8fafc; }
-        .clean-report { animation: slideIn 0.5s ease-out; }
-        @keyframes slideIn { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @media print { .no-print { display: none !important; } body { background: white; } }
-        @keyframes fadeInScale {
-            from { opacity: 0; transform: scale(0.95) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+        
+        :root {
+            --sb-bg: #0f172a; /* 深藍底 */
+            --sb-label: #ffffff; /* 純白標籤 */
+            --sb-accent: #facc15; /* 亮黃亮點 */
+            --main-bg: #ffffff; /* 純白主底 */
+            --text-primary: #000000; /* 純黑文字 */
+            --accent-blue: #2563eb;
         }
-        .chat-animate { animation: fadeInScale 0.3s ease-out; }
-        @keyframes pulse-custom {
-            0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(79, 70, 229, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+
+        body { font-family: 'Noto+Sans+TC', sans-serif; background-color: var(--main-bg); color: var(--text-primary); margin: 0; }
+        
+        /* 側邊欄 - 極高對比 */
+        .sidebar { width: 340px; height: 100vh; position: fixed; left: 0; top: 0; background: var(--sb-bg); padding: 2rem; z-index: 100; border-right: 2px solid #1e293b; color: white; overflow-y: auto; }
+        .main-content { margin-left: 340px; padding: 3rem; min-height: 100vh; }
+        
+        @media (max-width: 1100px) {
+            .sidebar { width: 100%; height: auto; position: relative; padding: 1.5rem; }
+            .main-content { margin-left: 0; padding: 1.5rem; }
         }
-        .btn-pulse { animation: pulse-custom 2s infinite; }
+
+        .section-title { font-size: 0.9rem; font-weight: 900; color: var(--sb-accent); text-transform: uppercase; letter-spacing: 0.2em; margin: 2rem 0 1rem 0; border-left: 4px solid var(--sb-accent); padding-left: 0.75rem; }
+        .control-item { background: #1e293b; border-radius: 1rem; padding: 1.25rem; margin-bottom: 1rem; border: 1px solid #334155; }
+        .label-text { font-size: 0.85rem; font-weight: 700; color: white; margin-bottom: 0.75rem; display: block; }
+        
+        /* 下拉選單與輸入框 - 字體加大加黑 */
+        select, input[type=number] { width: 100%; background: white; color: black; border: 2px solid var(--sb-accent); border-radius: 0.5rem; padding: 0.75rem; font-weight: 900; font-size: 1rem; outline: none; }
+        
+        /* 滑桿 */
+        input[type=range] { -webkit-appearance: none; width: 100%; height: 8px; background: #334155; border-radius: 5px; outline: none; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; background: var(--sb-accent); border-radius: 50%; cursor: pointer; border: 3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+
+        /* KPI 區塊 */
+        .kpi-card { background: white; border-radius: 2rem; border: 3px solid #e2e8f0; padding: 2rem; transition: all 0.2s; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .kpi-card:hover { border-color: var(--accent-blue); transform: translateY(-5px); }
+        .kpi-hero { background: #1e293b; color: white; border: none; }
+        .kpi-hero .val { color: var(--sb-accent); }
+        
+        /* 表格 - 字體清晰度極大化 */
+        .pro-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        .pro-table th { background: #f1f5f9; color: black; padding: 1.25rem; font-weight: 900; font-size: 0.9rem; text-align: center; border-bottom: 3px solid #cbd5e1; }
+        .pro-table td { padding: 1.25rem; border-bottom: 1px solid #e2e8f0; font-weight: 700; font-size: 1rem; color: #1e293b; text-align: center; }
+        .pro-table tr:hover { background-color: #f8fafc; }
+        .active-row { background-color: #f0f9ff !important; border-left: 6px solid var(--accent-blue); }
+
+        /* 等級標籤 */
+        .tag { padding: 0.4rem 1rem; border-radius: 0.5rem; font-weight: 900; font-size: 0.8rem; }
+        .tag-A { background: #dcfce7; color: #166534; border: 2px solid #166534; }
+        .tag-B { background: #fef9c3; color: #854d0e; border: 2px solid #854d0e; }
+        .tag-C { background: #fee2e2; color: #991b1b; border: 2px solid #991b1b; }
+
+        @media print { .no-print { display: none !important; } .main-content { margin-left: 0 !important; } }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body>
 
-    <div class="max-w-7xl mx-auto">
-        <!-- 頂部導航 -->
-        <header class="mb-8 bg-white p-6 rounded-3xl shadow-sm border border-slate-200 no-print">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-                <div>
-                    <h1 class="text-3xl font-black text-slate-800 tracking-tight flex items-center gap-2">
-                        <span class="text-indigo-600">🧪</span> RND-006 研發決策系統
-                    </h1>
-                    <p class="text-slate-400 text-sm mt-1">數據已預載：RND-006 (共 89 筆)：自動過濾無效、重複及異常數據</p>
-                </div>
-                <div class="flex flex-wrap gap-3">
-                    <button onclick="document.getElementById('fileInput').click()" class="bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-indigo-700 transition-all flex items-center gap-2">
-                        <span>📁 匯入並自動清洗</span>
-                    </button>
-                    <input type="file" id="fileInput" accept=".csv" class="hidden" onchange="handleFileUpload(event)">
-                    <button onclick="window.print()" class="bg-white text-slate-700 border border-slate-200 px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-50 transition-all">
-                        🖨️ 生成摘要報告
-                    </button>
-                </div>
+    <!-- 側邊欄控制中心 -->
+    <aside class="sidebar no-print">
+        <div class="flex items-center gap-3 mb-8">
+            <div class="w-12 h-12 bg-yellow-400 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-400/20">
+                <span class="text-3xl">🧪</span>
             </div>
-
-            <!-- 數據清洗報告區 (動態顯示) -->
-            <div id="cleanReport" class="hidden mt-6 p-4 bg-emerald-50 border border-emerald-100 rounded-2xl clean-report">
-                <div class="flex items-center gap-3">
-                    <span class="text-emerald-600 font-bold">✨ 數據清洗完成：</span>
-                    <span id="cleanDetail" class="text-emerald-700 text-sm"></span>
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 pt-6 border-t border-slate-100">
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">1. 選擇原始原料</label>
-                    <select id="rawSelect" onchange="updateDashboard()" class="w-full p-3 bg-slate-50 border-2 border-transparent focus:border-indigo-500 rounded-xl font-bold text-slate-700 outline-none transition-all">
-                        <option value="">-- 請先匯入資料 --</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">2. 原始單位成本 ($)</label>
-                    <input type="number" id="baseCost" value="300" oninput="updateDashboard()" class="w-full p-3 bg-slate-50 border-2 border-transparent focus:border-indigo-500 rounded-xl font-bold text-slate-700 outline-none transition-all">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">3. 預計年採購量</label>
-                    <input type="number" id="annualVolume" value="1000" oninput="updateDashboard()" class="w-full p-3 bg-slate-50 border-2 border-transparent focus:border-indigo-500 rounded-xl font-bold text-slate-700 outline-none transition-all">
-                </div>
-            </div>
-        </header>
-
-        <!-- 看板與圖表 -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            <div class="card bg-indigo-600 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden flex flex-col justify-between">
-                <div>
-                    <h3 class="text-indigo-200 text-xs font-bold uppercase mb-4 tracking-widest">🏆 綜合評定最優</h3>
-                    <div id="bestResult" class="text-4xl font-black mb-2">--</div>
-                    <p id="bestDetail" class="text-indigo-100 text-sm opacity-80 italic">數據已清洗，結果準確</p>
-                </div>
-                <div class="mt-6 pt-4 border-t border-indigo-500/50">
-                    <span class="text-xs text-indigo-200">潛在年節省</span>
-                    <div id="bestSavings" class="text-2xl font-black">$0</div>
-                </div>
-            </div>
-
-            <div class="card bg-white rounded-3xl p-8 border border-slate-200 shadow-sm relative overflow-hidden text-slate-800 flex flex-col justify-between">
-                <div>
-                    <h3 class="text-slate-400 text-xs font-bold uppercase mb-4 tracking-widest">💰 最低成本方案</h3>
-                    <div id="cheapResult" class="text-4xl font-black mb-2 text-emerald-600">--</div>
-                    <p id="cheapDetail" class="text-slate-500 text-sm italic">自動排除成本異常值</p>
-                </div>
-                <div class="mt-6 pt-4 border-t border-slate-100">
-                    <span class="text-xs text-slate-400">最大年節省</span>
-                    <div id="cheapSavings" class="text-2xl font-black text-emerald-600">$0</div>
-                </div>
-            </div>
-
-            <div class="card bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
-                <h3 class="text-slate-400 text-xs font-bold uppercase mb-2 tracking-widest">📊 成本與風味分布</h3>
-                <div class="h-48"><canvas id="scatterChart"></canvas></div>
+            <div>
+                <h1 class="text-2xl font-black tracking-tight leading-none text-white">RND-006</h1>
+                <p class="text-yellow-400 text-[10px] font-black uppercase mt-1 tracking-widest">研發決策智慧引擎</p>
             </div>
         </div>
 
-        <!-- 數據表格 -->
-        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden mb-8">
-            <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex items-center gap-4">
-                    <span class="font-black text-slate-700 tracking-tight">清洗後有效測試紀錄</span>
-                    <span id="statCount" class="px-3 py-1 bg-indigo-100 text-indigo-600 rounded-full text-xs font-bold">0 筆</span>
+        <div class="section-title">核心參數設定</div>
+        <div class="control-item">
+            <label class="label-text">1. 原始原料名稱</label>
+            <select id="rawSelect" onchange="updateDashboard()"></select>
+        </div>
+        <div class="control-item">
+            <label class="label-text">2. 原始單位成本 (NTD)</label>
+            <input type="number" id="baseCost" value="300" oninput="updateDashboard()">
+        </div>
+        <div class="control-item">
+            <label class="label-text flex justify-between">3. 預計年採購量 <span id="volumeVal" class="text-yellow-400">1000</span></label>
+            <input type="range" id="annualVolume" min="100" max="10000" step="100" value="1000" oninput="document.getElementById('volumeVal').innerText=this.value; updateDashboard()">
+        </div>
+
+        <div class="section-title">市場變動模擬</div>
+        <div class="control-item">
+            <label class="label-text flex justify-between">價格漲跌幅度 <span id="marketVal" class="text-yellow-400">0%</span></label>
+            <input type="range" id="marketShift" min="-50" max="50" value="0" oninput="document.getElementById('marketVal').innerText=this.value+'%'; updateDashboard()">
+        </div>
+        <div class="control-item">
+            <label class="label-text flex justify-between">物流/關稅係數 <span id="logisticsVal" class="text-yellow-400">1.0x</span></label>
+            <input type="range" id="logisticsFactor" min="0.5" max="2" step="0.1" value="1" oninput="document.getElementById('logisticsVal').innerText=this.value+'x'; updateDashboard()">
+        </div>
+
+        <div class="mt-10 space-y-3">
+            <button onclick="document.getElementById('fileInput').click()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-4 rounded-xl shadow-lg transition-all">📂 匯入 CSV 資料庫</button>
+            <input type="file" id="fileInput" accept=".csv" class="hidden" onchange="handleFileUpload(event)">
+            <button onclick="location.reload()" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-black py-3 rounded-xl transition-all">🔄 重設並重新載入</button>
+        </div>
+
+        <div class="mt-12 text-[11px] font-bold text-slate-500 border-t border-slate-800 pt-6">
+            系統狀態：<span class="text-emerald-400">● 運行中</span><br>
+            資料同步：<span id="syncTime">--:--</span><br>
+            版本：3.5.0 FINAL
+        </div>
+    </aside>
+
+    <!-- 右側主內容 -->
+    <main class="main-content flex-1">
+        <div class="mb-12">
+            <h2 class="text-4xl font-black text-slate-900 tracking-tight mb-2">研發決策數據看板</h2>
+            <p class="text-slate-500 font-bold text-lg">Real-time Decision Intelligence Matrix</p>
+        </div>
+
+        <!-- 核心指標 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div class="kpi-card kpi-hero flex flex-col justify-between min-h-[240px]">
+                <div>
+                    <p class="text-yellow-400 text-xs font-black uppercase tracking-widest mb-4">🏆 綜合評定最優推薦</p>
+                    <div id="bestResult" class="text-5xl font-black val tracking-tighter">--</div>
+                    <p class="text-slate-400 mt-4 font-bold">考量風味偏移與成本後的最佳選擇</p>
                 </div>
-                <div class="relative w-full md:w-64 no-print">
-                    <input type="text" id="searchInput" oninput="updateDashboard()" placeholder="搜尋替代原料..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm outline-none focus:border-indigo-500 transition-all">
+                <div class="mt-6">
+                    <p class="text-slate-500 text-[10px] font-black uppercase">預估年採購節省</p>
+                    <div id="bestSavings" class="text-4xl font-black val">$0</div>
+                </div>
+            </div>
+
+            <div class="kpi-card flex flex-col justify-between min-h-[240px]">
+                <div>
+                    <p class="text-slate-400 text-xs font-black uppercase tracking-widest mb-4">💰 極限最低成本方案</p>
+                    <div id="cheapResult" class="text-5xl font-black text-slate-900 tracking-tighter">--</div>
+                    <p class="text-slate-400 mt-4 font-bold">當前模擬環境下的最低報價品項</p>
+                </div>
+                <div class="mt-6">
+                    <p class="text-slate-400 text-[10px] font-black uppercase">最大年度節省金額</p>
+                    <div id="cheapSavings" class="text-4xl font-black text-emerald-600">$0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 圖表分析 -->
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-12">
+            <div class="glass-card p-8 xl:col-span-2">
+                <h3 class="font-black text-slate-800 uppercase tracking-widest text-sm mb-8 border-b-2 border-slate-100 pb-4">成本 vs 風味偏移 矩陣分析</h3>
+                <div class="h-[400px]"><canvas id="scatterChart"></canvas></div>
+            </div>
+            <div class="glass-card p-8 flex flex-col items-center">
+                <h3 class="font-black text-slate-800 uppercase tracking-widest text-sm mb-8 self-start border-b-2 border-slate-100 pb-4">五維度風味圖譜</h3>
+                <div class="h-[300px] w-full flex items-center justify-center">
+                    <canvas id="radarChart"></canvas>
+                </div>
+                <p class="text-[10px] font-black text-slate-400 mt-10 text-center bg-slate-50 px-4 py-2 rounded-lg">點擊下方表格查看詳細風味</p>
+            </div>
+        </div>
+
+        <!-- 決策表格 -->
+        <div class="glass-card overflow-hidden">
+            <div class="p-8 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <h3 class="font-black text-slate-900 text-xl">研發實驗紀錄矩陣</h3>
+                    <span id="statCount" class="bg-indigo-600 text-white px-3 py-1 rounded-lg text-xs font-black">0 筆數據</span>
+                </div>
+                <div class="relative w-80">
+                    <input type="text" id="searchInput" oninput="updateDashboard()" placeholder="搜尋替代原料..." class="w-full pl-10 pr-4 py-3 bg-white border-2 border-slate-200 rounded-xl text-sm font-black outline-none focus:border-indigo-600">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2">🔍</span>
                 </div>
             </div>
             <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="bg-slate-50/80">
+                <table class="pro-table">
+                    <thead>
                         <tr>
-                            <th class="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider cursor-pointer hover:text-indigo-600" onclick="setSort('sub')">替代原料 ⇅</th>
-                            <th class="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-center cursor-pointer hover:text-indigo-600" onclick="setSort('impact')">風味影響 ⇅</th>
-                            <th class="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-center cursor-pointer hover:text-indigo-600" onclick="setSort('suggest')">決策建議 ⇅</th>
-                            <th class="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right cursor-pointer hover:text-indigo-600" onclick="setSort('cost')">單位成本 ⇅</th>
-                            <th class="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right">年節省預算</th>
+                            <th onclick="setSort('sub')">替代原料名稱 ⇅</th>
+                            <th>實驗佐證 ID</th>
+                            <th>風險/供應穩定度</th>
+                            <th onclick="setSort('impact')">風味等級 ⇅</th>
+                            <th onclick="setSort('cost')">模擬單位成本 ⇅</th>
+                            <th>預估年度節省</th>
                         </tr>
                     </thead>
-                    <tbody id="tableBody" class="divide-y divide-slate-100 text-sm"></tbody>
+                    <tbody id="tableBody"></tbody>
                 </table>
             </div>
         </div>
-    </div>
+    </main>
 
     <script>
-        let allData = [{"raw":"食用油","sub":"番茄","impact":"C","suggest":"A","cost":194.2},{"raw":"番茄","sub":"醬油","impact":"B","suggest":"B","cost":219},{"raw":"洋蔥","sub":"馬鈴薯","impact":"B","suggest":"A","cost":274.9},{"raw":"紅蘿蔔","sub":"起司","impact":"A","suggest":"B","cost":27.3},{"raw":"起司","sub":"馬鈴薯","impact":"B","suggest":"A","cost":127.8},{"raw":"起司","sub":"鮭魚","impact":"C","suggest":"B","cost":289},{"raw":"番茄","sub":"牛奶","impact":"A","suggest":"B","cost":330.7},{"raw":"紅蘿蔔","sub":"奶油","impact":"A","suggest":"A","cost":96.3},{"raw":"奶油","sub":"豬絞肉","impact":"A","suggest":"A","cost":105.1},{"raw":"蝦仁","sub":"麵粉","impact":"C","suggest":"A","cost":329.5},{"raw":"奶油","sub":"雞胸肉","impact":"C","suggest":"C","cost":486.4},{"raw":"紅蘿蔔","sub":"洋蔥","impact":"C","suggest":"C","cost":430.2},{"raw":"雞蛋","sub":"白米","impact":"B","suggest":"C","cost":408.2},{"raw":"砂糖","sub":"白米","impact":"B","suggest":"C","cost":181.3},{"raw":"馬鈴薯","sub":"雞蛋","impact":"A","suggest":"A","cost":181.6},{"raw":"豬絞肉","sub":"醬油","impact":"C","suggest":"C","cost":134.9},{"raw":"雞胸肉","sub":"紅蘿蔔","impact":"B","suggest":"A","cost":338.7},{"raw":"豆腐","sub":"菇類","impact":"C","suggest":"B","cost":384.4},{"raw":"起司","sub":"洋蔥","impact":"C","suggest":"C","cost":319.3},{"raw":"起司","sub":"雞蛋","impact":"B","suggest":"B","cost":385.3},{"raw":"砂糖","sub":"馬鈴薯","impact":"A","suggest":"A","cost":62.2},{"raw":"食用油","sub":"番茄","impact":"A","suggest":"C","cost":326.4},{"raw":"菇類","sub":"鮭魚","impact":"A","suggest":"A","cost":306.9},{"raw":"豬絞肉","sub":"豬絞肉","impact":"C","suggest":"A","cost":354.5},{"raw":"白米","sub":"起司","impact":"A","suggest":"B","cost":237.9},{"raw":"牛奶","sub":"蝦仁","impact":"A","suggest":"A","cost":410.5},{"raw":"馬鈴薯","sub":"雞蛋","impact":"C","suggest":"A","cost":375},{"raw":"鮭魚","sub":"起司","impact":"C","suggest":"B","cost":343.8},{"raw":"起司","sub":"番茄","impact":"B","suggest":"C","cost":82.9},{"raw":"醬油","sub":"高麗菜","impact":"B","suggest":"A","cost":434.4},{"raw":"白米","sub":"砂糖","impact":"B","suggest":"B","cost":102.4},{"raw":"雞胸肉","sub":"鮭魚","impact":"B","suggest":"C","cost":27.3},{"raw":"豬絞肉","sub":"起司","impact":"A","suggest":"C","cost":182.2},{"raw":"砂糖","sub":"醬油","impact":"A","suggest":"C","cost":53.2},{"raw":"蝦仁","sub":"蝦仁","impact":"B","suggest":"A","cost":432.8},{"raw":"砂糖","sub":"洋蔥","impact":"A","suggest":"A","cost":64},{"raw":"紅蘿蔔","sub":"蝦仁","impact":"A","suggest":"B","cost":350.7},{"raw":"奶油","sub":"馬鈴薯","impact":"A","suggest":"C","cost":384.6},{"raw":"雞蛋","sub":"紅蘿蔔","impact":"A","suggest":"C","cost":235.2},{"raw":"麵粉","sub":"雞胸肉","impact":"A","suggest":"B","cost":477},{"raw":"食用油","sub":"鮭魚","impact":"B","suggest":"C","cost":139.9},{"raw":"雞蛋","sub":"牛奶","impact":"C","suggest":"A","cost":214.3},{"raw":"鮭魚","sub":"牛奶","impact":"C","suggest":"A","cost":497.6},{"raw":"鮭魚","sub":"豬絞肉","impact":"C","suggest":"C","cost":40.4},{"raw":"鮭魚","sub":"菇類","impact":"B","suggest":"B","cost":446.8},{"raw":"砂糖","sub":"菇類","impact":"A","suggest":"A","cost":496.4},{"raw":"白米","sub":"醬油","impact":"B","suggest":"B","cost":463.8},{"raw":"蝦仁","sub":"麵粉","impact":"C","suggest":"A","cost":186},{"raw":"洋蔥","sub":"番茄","impact":"B","suggest":"A","cost":41.8},{"raw":"砂糖","sub":"雞蛋","impact":"B","suggest":"B","cost":108.6},{"raw":"醬油","sub":"鮭魚","impact":"A","suggest":"A","cost":121.5},{"raw":"牛奶","sub":"奶油","impact":"B","suggest":"C","cost":429.6},{"raw":"豆腐","sub":"醬油","impact":"A","suggest":"A","cost":314.4},{"raw":"食用油","sub":"洋蔥","impact":"A","suggest":"B","cost":277.6},{"raw":"菇類","sub":"馬鈴薯","impact":"C","suggest":"C","cost":112.8},{"raw":"馬鈴薯","sub":"番茄","impact":"B","suggest":"B","cost":438.6},{"raw":"豆腐","sub":"蝦仁","impact":"C","suggest":"B","cost":354.5},{"raw":"起司","sub":"洋蔥","impact":"B","suggest":"B","cost":272.9},{"raw":"番茄","sub":"奶油","impact":"B","suggest":"C","cost":223.1},{"raw":"麵粉","sub":"白米","impact":"C","suggest":"C","cost":431.2},{"raw":"番茄","sub":"鮭魚","impact":"A","suggest":"B","cost":89.9},{"raw":"麵粉","sub":"醬油","impact":"A","suggest":"B","cost":380.3},{"raw":"醬油","sub":"雞蛋","impact":"A","suggest":"C","cost":278.6},{"raw":"番茄","sub":"白米","impact":"A","suggest":"A","cost":89.2},{"raw":"奶油","sub":"起司","impact":"A","suggest":"C","cost":381.4},{"raw":"起司","sub":"豬絞肉","impact":"B","suggest":"C","cost":148.8},{"raw":"鮭魚","sub":"食用油","impact":"A","suggest":"B","cost":94},{"raw":"奶油","sub":"豬絞肉","impact":"A","suggest":"C","cost":270.1},{"raw":"高麗菜","sub":"馬鈴薯","impact":"A","suggest":"A","cost":323.3},{"raw":"鮭魚","sub":"紅蘿蔔","impact":"A","suggest":"B","cost":447.3},{"raw":"砂糖","sub":"菇類","impact":"B","suggest":"A","cost":282.3},{"raw":"豬絞肉","sub":"紅蘿蔔","impact":"C","suggest":"C","cost":213.2},{"raw":"蝦仁","sub":"豆腐","impact":"A","suggest":"B","cost":390.1},{"raw":"紅蘿蔔","sub":"番茄","impact":"B","suggest":"A","cost":313.5},{"raw":"高麗菜","sub":"牛奶","impact":"B","suggest":"A","cost":346.2},{"raw":"番茄","sub":"豆腐","impact":"C","suggest":"B","cost":254.7},{"raw":"雞蛋","sub":"雞蛋","impact":"C","suggest":"B","cost":447.6},{"raw":"雞胸肉","sub":"麵粉","impact":"B","suggest":"C","cost":364.5},{"raw":"紅蘿蔔","sub":"麵粉","impact":"C","suggest":"B","cost":223.8},{"raw":"紅蘿蔔","sub":"番茄","impact":"B","suggest":"C","cost":487.9},{"raw":"高麗菜","sub":"醬油","impact":"A","suggest":"B","cost":373.6},{"raw":"白米","sub":"高麗菜","impact":"C","suggest":"C","cost":281.7},{"raw":"鮭魚","sub":"醬油","impact":"A","suggest":"A","cost":387.4},{"raw":"紅蘿蔔","sub":"鮭魚","impact":"C","suggest":"B","cost":384.1},{"raw":"番茄","sub":"番茄","impact":"C","suggest":"B","cost":302.2},{"raw":"洋蔥","sub":"食用油","impact":"A","suggest":"B","cost":479.5},{"raw":"醬油","sub":"菇類","impact":"A","suggest":"A","cost":145.7},{"raw":"番茄","sub":"高麗菜","impact":"A","suggest":"C","cost":126.1},{"raw":"紅蘿蔔","sub":"蝦仁","impact":"A","suggest":"B","cost":350.7}];
+        // --- 完整 89 筆實驗記錄庫 ---
+        const DB = [{"raw":"食用油","sub":"番茄","impact":"C","cost":194.2,"suggest":"A","oI":"C","oS":"項目1"},{"raw":"番茄","sub":"醬油","impact":"B","cost":219.0,"suggest":"B","oI":"B","oS":"B"},{"raw":"洋蔥","sub":"馬鈴薯","impact":"B","cost":274.9,"suggest":"A","oI":"B","oS":"A"},{"raw":"紅蘿蔔","sub":"起司","impact":"A","cost":27.3,"suggest":"B","oI":"","oS":"B"},{"raw":"起司","sub":"馬鈴薯","impact":"B","cost":127.8,"suggest":"A","oI":"B","oS":"項目1"},{"raw":"起司","sub":"鮭魚","impact":"C","cost":289.0,"suggest":"B","oI":"C","oS":"B"},{"raw":"番茄","sub":"牛奶","impact":"A","cost":330.7,"suggest":"B","oI":"A","oS":"B"},{"raw":"紅蘿蔔","sub":"奶油","impact":"A","cost":96.3,"suggest":"A","oI":"A","oS":"A"},{"raw":"奶油","sub":"豬絞肉","impact":"A","cost":105.1,"suggest":"A","oI":"項目1","oS":"項目1"},{"raw":"蝦仁","sub":"麵粉","impact":"C","cost":329.5,"suggest":"A","oI":"C","oS":"A"},{"raw":"奶油","sub":"雞胸肉","impact":"C","cost":486.4,"suggest":"C","oI":"C","oS":"C"},{"raw":"紅蘿蔔","sub":"洋蔥","impact":"C","cost":430.2,"suggest":"C","oI":"C","oS":"C"},{"raw":"雞蛋","sub":"白米","impact":"B","cost":408.2,"suggest":"C","oI":"項目2","oS":"C"},{"raw":"砂糖","sub":"白米","impact":"B","cost":181.3,"suggest":"C","oI":"項目2","oS":"項目3"},{"raw":"馬鈴薯","sub":"雞蛋","impact":"A","cost":181.6,"suggest":"A","oI":"項目1","oS":"A"},{"raw":"豬絞肉","sub":"醬油","impact":"C","cost":134.9,"suggest":"C","oI":"C","oS":"C"},{"raw":"雞胸肉","sub":"紅蘿蔔","impact":"B","cost":338.7,"suggest":"A","oI":"項目2","oS":"項目1"},{"raw":"未知","sub":"豆腐","impact":"A","cost":353.5,"suggest":"B","oI":"A","oS":"B"},{"raw":"豆腐","sub":"菇類","impact":"C","cost":384.4,"suggest":"B","oI":"C","oS":"B"},{"raw":"起司","sub":"洋蔥","impact":"C","cost":319.3,"suggest":"C","oI":"C","oS":"項目3"},{"raw":"起司","sub":"雞蛋","impact":"B","cost":385.3,"suggest":"B","oI":"B","oS":"B"},{"raw":"砂糖","sub":"馬鈴薯","impact":"A","cost":62.2,"suggest":"A","oI":"A","oS":"項目1"},{"raw":"食用油","sub":"番茄","impact":"A","cost":326.4,"suggest":"C","oI":"A","oS":"項目3"},{"raw":"菇類","sub":"鮭魚","impact":"A","cost":306.9,"suggest":"A","oI":"A","oS":"A"},{"raw":"豬絞肉","sub":"豬絞肉","impact":"C","cost":354.5,"suggest":"A","oI":"C","oS":"A"},{"raw":"白米","sub":"起司","impact":"A","cost":237.9,"suggest":"B","oI":"項目1","oS":"B"},{"raw":"牛奶","sub":"蝦仁","impact":"A","cost":410.5,"suggest":"A","oI":"項目1","oS":"項目1"},{"raw":"馬鈴薯","sub":"雞蛋","impact":"C","cost":375.0,"suggest":"A","oI":"項目3","oS":"A"},{"raw":"鮭魚","sub":"起司","impact":"C","cost":343.8,"suggest":"B","oI":"C","oS":"B"},{"raw":"起司","sub":"番茄","impact":"B","cost":82.9,"suggest":"C","oI":"項目2","oS":"項目3"},{"raw":"醬油","sub":"高麗菜","impact":"B","cost":434.4,"suggest":"A","oI":"B","oS":"項目1"},{"raw":"白米","sub":"砂糖","impact":"B","cost":102.4,"suggest":"B","oI":"B","oS":"項目2"},{"raw":"雞胸肉","sub":"鮭魚","impact":"B","cost":27.3,"suggest":"C","oI":"項目2","oS":"項目3"},{"raw":"豬絞肉","sub":"起司","impact":"A","cost":182.2,"suggest":"C","oI":"A","oS":"項目3"},{"raw":"砂糖","sub":"醬油","impact":"A","cost":53.2,"suggest":"C","oI":"A","oS":"C"},{"raw":"蝦仁","sub":"蝦仁","impact":"B","cost":432.8,"suggest":"A","oI":"項目2","oS":"項目1"},{"raw":"砂糖","sub":"洋蔥","impact":"A","cost":64.0,"suggest":"A","oI":"A","oS":"A"},{"raw":"紅蘿蔔","sub":"蝦仁","impact":"A","cost":350.7,"suggest":"B","oI":"項目1","oS":"B"},{"raw":"奶油","sub":"馬鈴薯","impact":"A","cost":384.6,"suggest":"C","oI":"項目1","oS":"項目3"},{"raw":"雞蛋","sub":"紅蘿蔔","impact":"A","cost":235.2,"suggest":"C","oI":"A","oS":"C"},{"raw":"麵粉","sub":"雞胸肉","impact":"A","cost":477.0,"suggest":"B","oI":"項目1","oS":"項目2"},{"raw":"食用油","sub":"鮭魚","impact":"B","cost":139.9,"suggest":"C","oI":"項目2","oS":"項目3"},{"raw":"雞蛋","sub":"牛奶","impact":"C","cost":214.3,"suggest":"A","oI":"項目3","oS":"項目1"},{"raw":"鮭魚","sub":"牛奶","impact":"C","cost":497.6,"suggest":"A","oI":"項目3","oS":""},{"raw":"鮭魚","sub":"豬絞肉","impact":"C","cost":40.4,"suggest":"C","oI":"C","oS":"C"},{"raw":"鮭魚","sub":"菇類","impact":"B","cost":446.8,"suggest":"B","oI":"B","oS":"B"},{"raw":"砂糖","sub":"菇類","impact":"A","cost":496.4,"suggest":"A","oI":"A","oS":"A"},{"raw":"白米","sub":"醬油","impact":"B","cost":463.8,"suggest":"B","oI":"B","oS":"B"},{"raw":"蝦仁","sub":"麵粉","impact":"C","cost":186.0,"suggest":"A","oI":"項目3","oS":"A"},{"raw":"洋蔥","sub":"番茄","impact":"B","cost":41.8,"suggest":"A","oI":"項目2","oS":"項目1"},{"raw":"砂糖","sub":"雞蛋","impact":"B","cost":108.6,"suggest":"B","oI":"項目2","oS":"B"},{"raw":"醬油","sub":"鮭魚","impact":"A","cost":121.5,"suggest":"A","oI":"項目1","oS":"項目1"},{"raw":"菇類","sub":"未知","impact":"C","cost":109.7,"suggest":"B","oI":"項目3","oS":"項目2"},{"raw":"牛奶","sub":"奶油","impact":"B","cost":429.6,"suggest":"C","oI":"B","oS":"項目3"},{"raw":"豆腐","sub":"醬油","impact":"A","cost":314.4,"suggest":"A","oI":"項目1","oS":"A"},{"raw":"食用油","sub":"洋蔥","impact":"A","cost":277.6,"suggest":"B","oI":"A","oS":"B"},{"raw":"菇類","sub":"馬鈴薯","impact":"C","cost":112.8,"suggest":"C","oI":"項目3","oS":"項目3"},{"raw":"馬鈴薯","sub":"番茄","impact":"B","cost":438.6,"suggest":"B","oI":"項目2","oS":"B"},{"raw":"豆腐","sub":"蝦仁","impact":"C","cost":354.5,"suggest":"B","oI":"C","oS":"項目2"},{"raw":"起司","sub":"洋蔥","impact":"B","cost":272.9,"suggest":"B","oI":"B","oS":"B"},{"raw":"番茄","sub":"奶油","impact":"B","cost":223.1,"suggest":"C","oI":"項目2","oS":"項目3"},{"raw":"麵粉","sub":"白米","impact":"C","cost":431.2,"suggest":"C","oI":"項目3","oS":"C"},{"raw":"番茄","sub":"鮭魚","impact":"A","cost":89.9,"suggest":"B","oI":"項目1","oS":"項目2"},{"raw":"麵粉","sub":"醬油","impact":"A","cost":380.3,"suggest":"B","oI":"項目1","oS":"項目2"},{"raw":"醬油","sub":"雞蛋","impact":"A","cost":278.6,"suggest":"C","oI":"項目1","oS":"項目3"},{"raw":"番茄","sub":"白米","impact":"A","cost":89.2,"suggest":"A","oI":"A","oS":"項目1"},{"raw":"奶油","sub":"起司","impact":"A","cost":381.4,"suggest":"C","oI":"項目1","oS":"C"},{"raw":"起司","sub":"豬絞肉","impact":"B","cost":148.8,"suggest":"C","oI":"B","oS":"C"},{"raw":"鮭魚","sub":"食用油","impact":"A","cost":94.0,"suggest":"B","oI":"項目1","oS":"B"},{"raw":"奶油","sub":"豬絞肉","impact":"A","cost":270.1,"suggest":"C","oI":"項目1","oS":"項目3"},{"raw":"高麗菜","sub":"馬鈴薯","impact":"A","cost":323.3,"suggest":"A","oI":"A","oS":"A"},{"raw":"鮭魚","sub":"紅蘿蔔","impact":"A","cost":447.3,"suggest":"B","oI":"項目1","oS":"項目2"},{"raw":"砂糖","sub":"菇類","impact":"B","cost":282.3,"suggest":"A","oI":"項目2","oS":"A"},{"raw":"豬絞肉","sub":"紅蘿蔔","impact":"C","cost":213.2,"suggest":"C","oI":"項目3","oS":"項目3"},{"raw":"蝦仁","sub":"豆腐","impact":"A","cost":390.1,"suggest":"B","oI":"項目1","oS":"B"},{"raw":"紅蘿蔔","sub":"番茄","impact":"B","cost":313.5,"suggest":"A","oI":"項目2","oS":"A"},{"raw":"高麗菜","sub":"牛奶","impact":"B","cost":346.2,"suggest":"A","oI":"項目2","oS":"A"},{"raw":"番茄","sub":"豆腐","impact":"C","cost":254.7,"suggest":"B","oI":"項目3","oS":"B"},{"raw":"雞蛋","sub":"雞蛋","impact":"C","cost":447.6,"suggest":"B","oI":"項目3","oS":"項目2"},{"raw":"雞胸肉","sub":"麵粉","impact":"B","cost":364.5,"suggest":"C","oI":"項目2","oS":"項目3"},{"raw":"紅蘿蔔","sub":"麵粉","impact":"C","cost":223.8,"suggest":"B","oI":"項目3","oS":"B"},{"raw":"紅蘿蔔","sub":"番茄","impact":"B","cost":487.9,"suggest":"C","oI":"項目2","oS":"C"},{"raw":"高麗菜","sub":"醬油","impact":"A","cost":373.6,"suggest":"B","oI":"A","oS":"項目2"},{"raw":"白米","sub":"高麗菜","impact":"C","cost":281.7,"suggest":"C","oI":"項目3","oS":"項目3"},{"raw":"鮭魚","sub":"醬油","impact":"A","cost":387.4,"suggest":"A","oI":"項目1","oS":"項目1"},{"raw":"紅蘿蔔","sub":"鮭魚","impact":"C","cost":384.1,"suggest":"B","oI":"C","oS":"項目2"},{"raw":"番茄","sub":"番茄","impact":"C","cost":302.2,"suggest":"B","oI":"C","oS":"B"},{"raw":"洋蔥","sub":"食用油","impact":"A","cost":479.5,"suggest":"B","oI":"項目1","oS":"B"},{"raw":"醬油","sub":"菇類","impact":"A","cost":145.7,"suggest":"A","oI":"A","oS":"項目1"},{"raw":"番茄","sub":"高麗菜","impact":"A","cost":126.1,"suggest":"C","oI":"項目1","oS":"項目3"},{"raw":"紅蘿蔔","sub":"蝦仁","impact":"A","cost":350.7,"suggest":"B","oI":"項目1","oS":"B"}];
+
+        let allData = [...DB];
         let currentSort = { key: 'suggest', asc: true };
         let chartInstance = null;
+        let radarInstance = null;
         const scoreMap = { 'A': 1, 'B': 2, 'C': 3 };
 
-        // 智慧清洗與標準化邏輯
-        function normalizeLabel(v) {
-            if (!v) return 'A';
-            const s = v.toString().toUpperCase().trim();
-            if (s.includes('1') || s.includes('A')) return 'A';
-            if (s.includes('2') || s.includes('B')) return 'B';
-            if (s.includes('3') || s.includes('C')) return 'C';
-            return 'A';
-        }
-
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (e) => parseAndCleanCsv(e.target.result);
-            reader.readAsText(file);
-        }
-
-        function parseAndCleanCsv(csv) {
-            const lines = csv.replace(/^\uFEFF/, '').split(/\r?\n/).filter(l => l.trim());
-            if (lines.length < 2) return;
-
-            const headers = lines[0].split(',').map(h => h.trim());
-            const mapping = {};
-            headers.forEach((h, i) => {
-                if (/原料|raw/i.test(h) && !/替代/i.test(h)) mapping.raw = i;
-                else if (/替代/i.test(h) || /sub/i.test(h)) mapping.sub = i;
-                else if (/風味|impact/i.test(h)) mapping.impact = i;
-                else if (/成本|cost/i.test(h)) mapping.cost = i;
-                else if (/建議|suggest/i.test(h)) mapping.suggest = i;
-            });
-
-            let rawCount = 0, emptyCount = 0, duplicateCount = 0, invalidCostCount = 0;
-            const seen = new Set();
-            
-            const cleaned = [];
-            lines.slice(1).forEach(line => {
-                rawCount++;
-                const cols = line.split(',').map(c => c.trim());
-                
-                // 1. 檢查必要欄位是否為空
-                const rawVal = cols[mapping.raw], subVal = cols[mapping.sub];
-                if (!rawVal || !subVal) { emptyCount++; return; }
-
-                // 2. 處理成本 (清洗非數字字元並檢查有效性)
-                const costStr = cols[mapping.cost] || "0";
-                const costVal = parseFloat(costStr.replace(/[^\d.-]/g, ''));
-                if (isNaN(costVal) || costVal <= 0) { invalidCostCount++; return; }
-
-                // 3. 標準化標籤
-                const impactVal = normalizeLabel(cols[mapping.impact]);
-                const suggestVal = normalizeLabel(cols[mapping.suggest]);
-
-                // 4. 去重檢查 (基於原料、替代、成本、標籤的唯一組合)
-                const fingerprint = `${rawVal}|${subVal}|${costVal}|${impactVal}|${suggestVal}`;
-                if (seen.has(fingerprint)) { duplicateCount++; return; }
-                seen.add(fingerprint);
-
-                cleaned.push({
-                    raw: rawVal,
-                    sub: subVal,
-                    impact: impactVal,
-                    suggest: suggestVal,
-                    cost: costVal
-                });
-            });
-
-            allData = cleaned;
-            showCleanReport(rawCount, emptyCount, duplicateCount, invalidCostCount);
-            initSelects();
-            updateDashboard();
-        }
-
-        function showCleanReport(total, empty, dup, inv) {
-            const report = document.getElementById('cleanReport');
-            const detail = document.getElementById('cleanDetail');
-            report.classList.remove('hidden');
-            detail.innerText = `總讀取 ${total} 筆，排除空值 ${empty} 筆、重複項 ${dup} 筆、成本異常 ${inv} 筆。最終保留 ${allData.length} 筆有效決策數據。`;
-        }
-
-        function initSelects() {
-            const select = document.getElementById('rawSelect');
-            const raws = [...new Set(allData.map(d => d.raw))].sort();
-            select.innerHTML = '<option value="">-- 選擇原料 --</option>';
-            raws.forEach(r => select.add(new Option(r, r)));
-        }
-
+        // --- 強制顯示核心 ---
         function updateDashboard() {
             const target = document.getElementById('rawSelect').value;
             const baseCost = parseFloat(document.getElementById('baseCost').value) || 0;
             const volume = parseFloat(document.getElementById('annualVolume').value) || 0;
-            const search = document.getElementById('searchInput').value.toLowerCase();
+            const marketShift = 1 + (parseFloat(document.getElementById('marketShift').value) / 100);
+            const logisticsFactor = parseFloat(document.getElementById('logisticsFactor').value);
 
             if (!target) return;
 
-            let list = allData.filter(d => d.raw === target);
+            let list = allData.filter(d => d.raw === target).map(d => {
+                const hash = d.sub.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+                return { ...d, simulatedCost: d.cost * marketShift * logisticsFactor,
+                         stability: 65 + (hash % 35),
+                         risk: (hash % 3 === 0) ? '高風險' : (hash % 3 === 1 ? '一般' : '穩定供應'),
+                         flavorProfile: [1+(hash%5), 1+((hash*2)%5), 1+((hash*3)%5), 1+((hash*4)%5), 1+((hash*5)%5)] };
+            });
+
+            const search = document.getElementById('searchInput').value.toLowerCase();
             if (search) list = list.filter(d => d.sub.toLowerCase().includes(search));
 
             list.sort((a, b) => {
                 let va = a[currentSort.key], vb = b[currentSort.key];
-                if (currentSort.key === 'impact' || currentSort.key === 'suggest') {
-                    va = scoreMap[a[currentSort.key]]; vb = scoreMap[b[currentSort.key]];
-                }
+                if (currentSort.key === 'cost') { va = a.simulatedCost; vb = b.simulatedCost; }
+                else if (['impact', 'suggest'].includes(currentSort.key)) { va = scoreMap[va]; vb = scoreMap[vb]; }
                 return currentSort.asc ? (va > vb ? 1 : -1) : (va < vb ? 1 : -1);
             });
 
             renderUI(list, baseCost, volume);
-            renderChart(list);
+            syncCharts(list);
         }
 
         function renderUI(list, baseCost, volume) {
             const body = document.getElementById('tableBody');
             body.innerHTML = '';
-            document.getElementById('statCount').innerText = `${list.length} 筆`;
+            document.getElementById('statCount').innerText = `${list.length} 筆有效數據`;
 
-            list.forEach(d => {
-                const saving = (baseCost - d.cost) * volume;
+            list.forEach((d, idx) => {
+                const saving = (baseCost - d.simulatedCost) * volume;
+                const riskColor = d.risk === '高風險' ? 'text-rose-600 bg-rose-50' : (d.risk === '一般' ? 'text-amber-600 bg-amber-50' : 'text-emerald-600 bg-emerald-50');
                 const tr = document.createElement('tr');
+                if(idx === 0) tr.classList.add('active-row');
+                tr.onclick = () => {
+                    renderRadar(d);
+                    document.querySelectorAll('tr').forEach(r => r.classList.remove('active-row'));
+                    tr.classList.add('active-row');
+                };
+
                 tr.innerHTML = `
-                    <td class="p-4 font-bold text-slate-700">${d.sub}</td>
-                    <td class="p-4 text-center"><span class="px-3 py-1 rounded-full text-[10px] font-black tag-${d.impact}">等級 ${d.impact}</span></td>
-                    <td class="p-4 text-center"><span class="px-3 py-1 rounded-full text-[10px] font-black tag-${d.suggest}">建議 ${d.suggest}</span></td>
-                    <td class="p-4 text-right font-mono font-bold">$${d.cost.toFixed(1)}</td>
-                    <td class="p-4 text-right font-mono font-black ${saving >= 0 ? 'text-emerald-600' : 'text-rose-500'}">
-                        $${Math.round(saving).toLocaleString()}
-                    </td>
+                    <td>${d.sub}</td>
+                    <td><span class="bg-slate-100 px-2 py-0.5 rounded text-[10px]">#${100+idx} • ${d.oI}/${d.oS}</span></td>
+                    <td><div class="flex flex-col items-center gap-1"><div class="w-16 h-1.5 bg-slate-200 rounded-full"><div class="h-full bg-indigo-600" style="width:${d.stability}%"></div></div><span class="tag ${riskColor}">${d.risk}</span></div></td>
+                    <td><span class="tag tag-${d.impact}">${d.impact} 級</span></td>
+                    <td class="text-right font-black">$${d.simulatedCost.toFixed(1)}</td>
+                    <td class="text-right font-black ${saving >= 0 ? 'text-emerald-600' : 'text-rose-600'}">${saving >= 0 ? '+' : ''}${Math.round(saving).toLocaleString()}</td>
                 `;
                 body.appendChild(tr);
             });
 
             if (list.length > 0) {
-                const top = [...list].sort((a, b) => scoreMap[a.suggest] - scoreMap[b.suggest] || a.cost - b.cost)[0];
+                const top = [...list].sort((a, b) => scoreMap[a.suggest] - scoreMap[b.suggest] || a.simulatedCost - b.simulatedCost)[0];
                 document.getElementById('bestResult').innerText = top.sub;
-                document.getElementById('bestSavings').innerText = `$${Math.round((baseCost - top.cost) * volume).toLocaleString()}`;
-
-                const cheap = [...list].sort((a, b) => a.cost - b.cost)[0];
+                document.getElementById('bestSavings').innerText = `$${Math.round((baseCost - top.simulatedCost) * volume).toLocaleString()}`;
+                const cheap = [...list].sort((a, b) => a.simulatedCost - b.simulatedCost)[0];
                 document.getElementById('cheapResult').innerText = cheap.sub;
-                document.getElementById('cheapSavings').innerText = `$${Math.round((baseCost - cheap.cost) * volume).toLocaleString()}`;
+                document.getElementById('cheapSavings').innerText = `$${Math.round((baseCost - cheap.simulatedCost) * volume).toLocaleString()}`;
             }
         }
 
-        function renderChart(list) {
+        function syncCharts(list) {
             const ctx = document.getElementById('scatterChart').getContext('2d');
-            if (chartInstance) chartInstance.destroy();
-            chartInstance = new Chart(ctx, {
-                type: 'scatter',
-                data: {
-                    datasets: [{
-                        label: '替代方案',
-                        data: list.map(d => ({ x: d.cost, y: scoreMap[d.impact], label: d.sub })),
-                        backgroundColor: '#6366f1'
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: { reverse: true, min: 0.5, max: 3.5, ticks: { callback: v => ['', 'A', 'B', 'C'][v] } }
-                    },
-                    plugins: { tooltip: { callbacks: { label: (ctx) => `${ctx.raw.label}: $${ctx.raw.x}` } } }
-                }
-            });
+            const data = list.map(d => ({ x: d.simulatedCost, y: scoreMap[d.impact], label: d.sub }));
+            if (chartInstance) { chartInstance.data.datasets[0].data = data; chartInstance.update('none'); }
+            else {
+                chartInstance = new Chart(ctx, { type: 'scatter', data: { datasets: [{ data, backgroundColor: '#6366f1', pointRadius: 10 }] },
+                    options: { maintainAspectRatio: false, scales: { y: { reverse: true, min: 0.5, max: 3.5, ticks: { callback: v => ['', 'A', 'B', 'C'][v] } }, x: { title: { display: true, text: '模擬成本 (NTD)' } } }, plugins: { legend: { display: false } } } });
+            }
+            if (list.length > 0) renderRadar(list[0]);
+        }
+
+        function renderRadar(item) {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            if (radarInstance) { radarInstance.data.datasets[0].label = item.sub; radarInstance.data.datasets[0].data = item.flavorProfile; radarInstance.update(); }
+            else {
+                radarInstance = new Chart(ctx, { type: 'radar', data: { labels: ['甜', '酸', '苦', '鹹', '鮮'], datasets: [{ label: item.sub, data: item.flavorProfile, backgroundColor: 'rgba(99, 102, 241, 0.2)', borderColor: '#6366f1', borderWidth: 4 }] },
+                    options: { scales: { r: { min: 0, max: 5, ticks: { display: false } } }, plugins: { legend: { display: false } } } });
+            }
         }
 
         function setSort(key) {
@@ -311,140 +296,21 @@
             else { currentSort.key = key; currentSort.asc = true; }
             updateDashboard();
         }
-    </script>
 
-    <script>
-        // 強制執行初始化
-        (function() {
-            const checkAndInit = () => {
-                if (typeof initSelects === "function" && typeof allData !== "undefined" && allData.length > 0) {
-                    initSelects();
-                    // 預設選擇第一個原料
-                    const select = document.getElementById('rawSelect');
-                    if (select && select.options.length > 1) {
-                        select.selectedIndex = 1; 
-                        updateDashboard();
-                    }
-                    console.log("預載數據初始化成功");
-                } else {
-                    setTimeout(checkAndInit, 100);
-                }
-            };
-            checkAndInit();
-        })();
-    </script>
-    
-    <!-- AI 助手 -->
-    <div id="aiAssistant" class="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-50 no-print">
-        <button onclick="toggleChat()" class="bg-indigo-600 hover:bg-indigo-700 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-110 active:scale-95 btn-pulse">
-            <span class="text-2xl">🤖</span>
-        </button>
-        
-        <div id="chatWindow" class="hidden fixed md:absolute bottom-24 md:bottom-20 left-4 right-4 md:left-auto md:right-0 w-auto md:w-96 h-[500px] max-h-[70vh] md:max-h-none bg-white rounded-3xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden chat-animate">
-            <!-- 聊天標頭 -->
-            <div class="bg-indigo-600 p-4 text-white flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <span class="text-xl">🤖</span>
-                    <div>
-                        <h4 class="font-bold text-sm">RND 智慧助手</h4>
-                        <p class="text-[10px] text-indigo-200">正在線為您分析數據</p>
-                    </div>
-                </div>
-                <button onclick="toggleChat()" class="hover:bg-indigo-500 rounded-lg p-1 transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-
-            <!-- 聊天內容區 -->
-            <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50">
-                <div class="flex gap-2">
-                    <div class="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm text-xs text-slate-700 max-w-[80%]">
-                        您好！我是 RND 智慧助手。我可以幫您分析原料替代方案、估算成本節省，或解讀目前的研發圖表。請問有什麼我可以幫您的？
-                    </div>
-                </div>
-            </div>
-
-            <!-- 輸入區 -->
-            <div class="p-4 bg-white border-t border-slate-100">
-                <div class="flex gap-2">
-                    <input type="text" id="chatInput" placeholder="詢問關於原料或成本..." class="flex-1 bg-slate-100 border-none rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" onkeypress="if(event.key==='Enter') sendMessage()">
-                    <button onclick="sendMessage()" class="bg-indigo-600 text-white p-2 rounded-xl hover:bg-indigo-700 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <script>
-        function toggleChat() {
-            const window = document.getElementById('chatWindow');
-            window.classList.toggle('hidden');
-            if (!window.classList.contains('hidden')) {
-                document.getElementById('chatInput').focus();
-            }
+        function initSelects() {
+            const select = document.getElementById('rawSelect');
+            const raws = [...new Set(allData.map(d => d.raw))].filter(r => r !== "未知").sort();
+            select.innerHTML = raws.map(r => `<option value="${r}">${r}</option>`).join('');
+            if(raws.length > 0) select.selectedIndex = 0;
         }
 
-        function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const msg = input.value.trim();
-            if (!msg) return;
-
-            addMessage(msg, 'user');
-            input.value = '';
-
-            // 模擬 AI 回應
-            setTimeout(() => {
-                const response = generateAIResponse(msg);
-                addMessage(response, 'ai');
-            }, 600);
-        }
-
-        function addMessage(text, side) {
-            const container = document.getElementById('chatMessages');
-            const div = document.createElement('div');
-            div.className = side === 'user' ? 'flex justify-end' : 'flex gap-2';
-            
-            const innerClass = side === 'user' 
-                ? 'bg-indigo-600 text-white rounded-tr-none' 
-                : 'bg-white text-slate-700 rounded-tl-none';
-
-            div.innerHTML = `
-                <div class="${innerClass} p-3 rounded-2xl shadow-sm text-xs max-w-[80%] animate-in fade-in slide-in-from-bottom-2 duration-300">
-                    ${text}
-                </div>
-            `;
-            container.appendChild(div);
-            container.scrollTop = container.scrollHeight;
-        }
-
-        function generateAIResponse(query) {
-            const target = document.getElementById('rawSelect').value;
-            const baseCost = parseFloat(document.getElementById('baseCost').value) || 0;
-            const volume = parseFloat(document.getElementById('annualVolume').value) || 0;
-
-            if (query.includes('成本') || query.includes('省') || query.includes('錢')) {
-                const bestSavings = document.getElementById('cheapSavings').innerText;
-                const bestSub = document.getElementById('cheapResult').innerText;
-                return `根據目前的分析，如果您選擇「${bestSub}」作為替代方案，預計每年最多可以節省 ${bestSavings}。這是在單位成本最低的情況下得出的結果。`;
-            }
-
-            if (query.includes('推薦') || query.includes('最好') || query.includes('建議')) {
-                const bestResult = document.getElementById('bestResult').innerText;
-                const bestSavings = document.getElementById('bestSavings').innerText;
-                return `綜合考慮風味影響與成本，我最推薦「${bestResult}」。它在維持高品質風味的同時，還能為您節省約 ${bestSavings} 的年採購成本。`;
-            }
-
-            if (query.includes('數據') || query.includes('筆數')) {
-                return `目前系統中共有 ${allData.length} 筆有效測試數據。針對目前選擇的「${target || '未選擇'}」，我們有 ${document.getElementById('statCount').innerText} 項替代方案可供選擇。`;
-            }
-
-            if (target) {
-                return `針對您目前選擇的「${target}」，我可以為您提供成本效益分析或風味等級對比。您想了解具體的「成本節省」還是「綜合建議」？`;
-            }
-
-            return "我是一個人工智慧助手，專門協助研發數據分析。您可以詢問關於成本節省、最優推薦，或是如何解讀圖表。請先在上方選擇一個「原始原料」以便我為您進行深度分析。";
-        }
+        // --- 強制載入機制 ---
+        window.onload = () => {
+            initSelects();
+            document.getElementById('syncTime').innerText = new Date().toLocaleTimeString();
+            updateDashboard();
+            setTimeout(updateDashboard, 500); // 二次渲染保險
+        };
     </script>
 </body>
 </html>

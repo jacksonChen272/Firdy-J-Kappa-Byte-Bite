@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
@@ -32,16 +32,27 @@
     --green-normal: #10b981;
     --orange-slow: #f59e0b;
     --red-dead: #ef4444;
+    --glass-blur: blur(16px);
+}
+
+[data-theme="light"] {
+    --bg-dark: #f0f2f5;
+    --card-bg: rgba(255, 255, 255, 0.8);
+    --border-color: rgba(0, 0, 0, 0.1);
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+    --accent-orange-glow: rgba(243, 92, 39, 0.1);
 }
 
 body {
     background-color: var(--bg-dark);
     background-image: 
-        radial-gradient(at 10% 20%, rgba(243, 92, 39, 0.08) 0px, transparent 50%),
+        radial-gradient(at 10% 20%, var(--accent-orange-glow) 0px, transparent 50%),
         radial-gradient(at 90% 80%, rgba(59, 130, 246, 0.06) 0px, transparent 50%);
     color: var(--text-main);
     min-height: 100vh;
     padding: 2.5rem;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 /* Glassmorphism Dashboard Layout */
@@ -111,7 +122,7 @@ body {
 
 .input-group {
     position: relative;
-    flex: 1.5;
+    flex: 1;
     min-width: 240px;
 }
 
@@ -426,25 +437,12 @@ tr.table-row-hover:hover td {
 .advice-text {
     font-size: 0.85rem;
     color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: inline-block;
-}
-.advice-text:hover {
-    color: #ffffff;
-    text-decoration: underline;
 }
 .advice-text.warn {
     color: #fca5a5;
 }
-.advice-text.warn:hover {
-    color: #fee2e2;
-}
 .advice-text.slow-warn {
     color: #fde047;
-}
-.advice-text.slow-warn:hover {
-    color: #fef08a;
 }
 
 /* TABLE PAGINATION */
@@ -685,25 +683,161 @@ tr.table-row-hover:hover td {
         grid-template-columns: 1fr; /* Stack metrics cards in single column on small screens */
     }
 }
+    /* CHAT ASSISTANT STYLES */
+    .ai-fab {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: var(--accent-orange);
+        box-shadow: 0 0 20px var(--accent-orange-glow);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    .ai-fab:hover {
+        transform: scale(1.1) rotate(5deg);
+    }
+    
+    .ai-fab svg {
+        width: 30px;
+        height: 30px;
+        color: white;
+    }
 
-.manage-dock{background:var(--card-bg);backdrop-filter:blur(16px);border:1px solid var(--border-color);border-radius:16px;padding:1rem 1.25rem;display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;box-shadow:0 8px 32px rgba(0,0,0,.2)}
-.manage-dock input[type=file]{display:none}.file-label{padding:.75rem 1.1rem;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid var(--border-color);cursor:pointer;font-size:.9rem}.file-label:hover{background:rgba(255,255,255,.15)}
-.action-btn{padding:5px 9px;border-radius:7px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#fff;cursor:pointer;margin-right:4px}.action-btn:hover{background:rgba(243,92,39,.25)}.action-btn.delete:hover{background:rgba(239,68,68,.25)}
-@media(max-width:768px){.manage-dock{flex-direction:column;align-items:stretch}.file-label,.manage-dock .btn{width:100%;justify-content:center;text-align:center}}
+    .chat-window {
+        position: fixed;
+        bottom: 6.5rem;
+        right: 2rem;
+        width: 380px;
+        height: 550px;
+        background: var(--card-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        display: none;
+        flex-direction: column;
+        box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        overflow: hidden;
+        animation: chatSlideUp 0.3s ease-out;
+    }
 
-.record-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:1300;display:none;align-items:center;justify-content:center;padding:1rem}
-.record-modal-backdrop.open{display:flex}
-.record-modal{width:min(720px,96vw);max-height:88vh;background:#0d131f;border:1px solid var(--border-color);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.65);display:flex;flex-direction:column;overflow:hidden}
-.record-modal-header{display:flex;justify-content:space-between;align-items:center;padding:1.1rem 1.25rem;border-bottom:1px solid var(--border-color)}
-.record-modal-header h2{font-size:1.05rem;color:#fff}
-.record-modal-body{padding:1rem 1.25rem;overflow:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.9rem}
-.record-field{display:flex;flex-direction:column;gap:.35rem}.record-field.full{grid-column:1/-1}
-.record-field label{font-size:.78rem;color:var(--text-muted)}
-.record-field input,.record-field textarea,.record-field select{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--border-color);border-radius:10px;color:#fff;padding:.72rem .8rem;outline:none}
-.record-field textarea{min-height:76px;resize:vertical}
-.record-modal-footer{display:flex;gap:.75rem;justify-content:flex-end;padding:1rem 1.25rem;border-top:1px solid var(--border-color)}
-@media(max-width:640px){.record-modal-body{grid-template-columns:1fr}.record-modal-footer{flex-direction:column}.record-modal-footer .btn{width:100%}}
+    @keyframes chatSlideUp {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
 
+    .chat-header {
+        padding: 1.2rem;
+        background: rgba(243, 92, 39, 0.1);
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .chat-header h3 {
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--accent-orange);
+    }
+
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .message {
+        max-width: 85%;
+        padding: 0.8rem;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    .message.ai {
+        align-self: flex-start;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-color);
+        border-bottom-left-radius: 2px;
+    }
+
+    .message.user {
+        align-self: flex-end;
+        background: var(--accent-orange);
+        color: white;
+        border-bottom-right-radius: 2px;
+    }
+
+    .chat-input-area {
+        padding: 1rem;
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .input-row {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .chat-input {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 0.6rem;
+        color: white;
+        font-size: 0.9rem;
+    }
+
+    .chat-send {
+        background: var(--accent-orange);
+        border: none;
+        border-radius: 8px;
+        padding: 0.6rem 1rem;
+        color: white;
+        cursor: pointer;
+    }
+
+    .suggested-questions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .suggestion-chip {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-color);
+        border-radius: 15px;
+        padding: 4px 10px;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .suggestion-chip:hover {
+        background: var(--accent-orange-glow);
+        color: var(--accent-orange);
+        border-color: var(--accent-orange);
+    }
 </style>
 </head>
 
@@ -714,11 +848,11 @@ tr.table-row-hover:hover td {
     <header class="header-card">
         <div class="header-info">
             <span class="system-tag">🍃 SCM LOGISTICS SYSTEM</span>
-            <h1 style="margin-top: 0.5rem;">庫齡與呆滯品分析面板</h1>
-            <p>即時監控庫存流動率、庫存分配及物流呆滯品預警報告｜已內嵌 SCM-005.csv 資料</p>
+            <h1 id="dash-title" style="margin-top: 0.5rem;">庫齡與呆滯品分析面板</h1>
+            <p id="dash-desc">即時監控庫存流動率、庫存分配及物流呆滯品預警報告</p>
         </div>
         <div style="text-align: right;">
-            <div style="font-size: 0.8rem; color: var(--text-muted);">最後更新時間</div>
+            <div id="last-update-label" style="font-size: 0.8rem; color: var(--text-muted);">最後更新時間</div>
             <div id="live-time" style="font-size: 1.1rem; font-weight: 600; color: #ffffff; margin-top: 4px;">2026/06/04 11:00</div>
         </div>
     </header>
@@ -728,50 +862,46 @@ tr.table-row-hover:hover td {
         <div class="input-group">
             <input id="keyword" placeholder="🔍 輸入品項名稱即時搜尋..." oninput="render()">
         </div>
-        <select id="area" onchange="render()">
-            <option value="">全部區域</option>
+        <select id="area" onchange="render()" style="flex: 0.5; min-width: 120px;">
+            <option id="opt-all-area" value="">全部區域</option>
         </select>
-        <select id="status" onchange="syncStatusFilter(this.value)">
-            <option value="">全部庫存狀態</option>
-            <option value="normal">正常庫存</option>
-            <option value="slow">庫齡偏高</option>
-            <option value="dead">疑似呆滯品</option>
-            <option value="unknown">資料缺失</option>
+        <select id="status" onchange="render()" style="flex: 0.5; min-width: 120px;">
+            <option id="opt-all-status" value="">全部庫存狀態</option>
+            <option id="opt-status-normal" value="normal">正常庫存</option>
+            <option id="opt-status-slow" value="slow">庫齡偏高</option>
+            <option id="opt-status-dead" value="dead">疑似呆滯品</option>
         </select>
-        <select id="advice" onchange="syncAdviceFilter(this.value)">
-            <option value="">全部處置建議</option>
-            <option value="normal">庫存狀態正常</option>
-            <option value="slow">觀察銷售速度並降低進貨量</option>
-            <option value="dead">優先促銷、清倉或停止補貨</option>
-            <option value="unknown">請補齊入庫日期</option>
-        </select>
+        
+        <!-- Global Settings moved from chat assistant -->
+        <div style="display: flex; gap: 0.5rem;">
+            <select id="lang-select" onchange="changeLanguage()" style="width: auto; background: rgba(243, 92, 39, 0.1); border-color: rgba(243, 92, 39, 0.3);">
+                <option value="zh-TW">繁體中文</option>
+                <option value="en">English</option>
+                <option value="ja">日本語</option>
+                <option value="ko">한국어</option>
+            </select>
+            <select id="theme-select" onchange="changeTheme()" style="width: auto; background: rgba(243, 92, 39, 0.1); border-color: rgba(243, 92, 39, 0.3);">
+                <option value="dark">深色模式</option>
+                <option value="light">亮色模式</option>
+                <option value="system">跟隨系統</option>
+            </select>
+        </div>
+
         <button class="btn btn-secondary" onclick="resetAll()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-            重設
+            <span id="btn-reset-text">重設</span>
         </button>
-        <button class="btn btn-primary" onclick="exportCSV()" style="margin-left: auto;">
+        <button class="btn btn-primary" onclick="exportCSV()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-            匯出報表
+            <span id="btn-export-text">匯出報表</span>
         </button>
     </section>
-
-    <!-- DATA MANAGEMENT: CSV 匯入、新增、編輯、刪除，保留原本互動分析 -->
-    <section class="manage-dock">
-        <label class="file-label" for="csv-import">📥 匯入 CSV</label>
-        <input id="csv-import" type="file" accept=".csv,text/csv" onchange="handleCSVImport(event)">
-        <button class="btn btn-secondary" onclick="addRecord()">＋ 新增資料</button>
-        <button class="btn btn-secondary" onclick="downloadCurrentData()">💾 下載目前資料</button>
-        <button class="btn btn-secondary" onclick="restoreDefaultData()">↩ 還原原始資料</button>
-        <button class="btn btn-secondary" onclick="clearAllData()">🗑 清空資料</button>
-        <span style="font-size:.8rem;color:var(--text-muted);">匯入後資料會存在此瀏覽器，不會影響原檔。</span>
-    </section>
-
 
     <!-- KEY PERFORMANCE INDICATORS -->
     <section class="metrics-grid">
         <div class="metric-card total" onclick="filterByStatus('')" title="點擊篩選：全部品項">
             <div class="metric-info">
-                <span>總分析品項</span>
+                <span id="metric-total-title">總分析品項</span>
                 <b id="total">0</b>
                 <div id="sub-total" style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">總庫存量: 0 個</div>
             </div>
@@ -781,7 +911,7 @@ tr.table-row-hover:hover td {
         </div>
         <div class="metric-card normal" onclick="filterByStatus('normal')" title="點擊篩選：正常庫存">
             <div class="metric-info">
-                <span>正常庫存品項</span>
+                <span id="metric-normal-title">正常庫存品項</span>
                 <b id="normal-count">0</b>
                 <div id="sub-normal" style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">數量: 0 個</div>
             </div>
@@ -791,7 +921,7 @@ tr.table-row-hover:hover td {
         </div>
         <div class="metric-card slow" onclick="filterByStatus('slow')" title="點擊篩選：庫齡偏高">
             <div class="metric-info">
-                <span>庫齡偏高品項</span>
+                <span id="metric-slow-title">庫齡偏高品項</span>
                 <b id="slow-count">0</b>
                 <div id="sub-slow" style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">最大庫齡: 0 天</div>
             </div>
@@ -801,7 +931,7 @@ tr.table-row-hover:hover td {
         </div>
         <div class="metric-card dead" onclick="filterByStatus('dead')" title="點擊篩選：疑似呆滯品">
             <div class="metric-info">
-                <span>疑似呆滯品項</span>
+                <span id="metric-dead-title">疑似呆滯品項</span>
                 <b id="dead-count">0</b>
                 <div id="sub-dead" style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">資金積壓: $0</div>
             </div>
@@ -811,7 +941,7 @@ tr.table-row-hover:hover td {
         </div>
         <div class="metric-card total-value" onclick="filterByStatus('')" title="點擊重設篩選">
             <div class="metric-info">
-                <span>篩選滯留資金總額</span>
+                <span id="metric-val-title">篩選滯留資金總額</span>
                 <b id="total-val">$0</b>
                 <div id="sub-value" style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">品項均價: $0</div>
             </div>
@@ -825,15 +955,15 @@ tr.table-row-hover:hover td {
     <section class="charts-grid">
         <div class="chart-card">
             <div class="chart-card-title">
-                <span>品項庫存量分佈排行 (Top 8)</span>
-                <span class="chart-unit-label">單位：個 (點擊長條可快速搜尋品項)</span>
+                <span id="chart-bar-title">品項庫存量分佈排行 (Top 8)</span>
+                <span id="chart-bar-unit" class="chart-unit-label">單位：個 (點擊長條可快速搜尋品項)</span>
             </div>
             <div id="bar-chart" class="chart-container"></div>
         </div>
         <div class="chart-card">
             <div class="chart-card-title">
-                <span>各區域庫存量佔比圓餅圖</span>
-                <span class="chart-unit-label">單位：個 (點擊扇區可快速篩選區域)</span>
+                <span id="chart-pie-title">各區域庫存量佔比圓餅圖</span>
+                <span id="chart-pie-unit" class="chart-unit-label">單位：個 (點擊扇區可快速篩選區域)</span>
             </div>
             <div id="pie-chart" class="chart-container"></div>
         </div>
@@ -842,21 +972,20 @@ tr.table-row-hover:hover td {
     <!-- DATA DETAIL TABLE -->
     <section class="table-card">
         <div class="chart-card-title">
-            <span>庫存呆滯品分析明細</span>
-            <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">💡 點擊欄位標頭可進行排序，點擊列表行可展開 AI 診斷，點擊狀態與建議文字可進行快速過濾</span>
+            <span id="table-title">庫存呆滯品分析明細</span>
+            <span id="table-tip" style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">💡 點擊欄位標頭可進行排序，點擊列表行可展開 AI 診斷，點擊標籤可按狀態快速篩選</span>
         </div>
         <div class="table-wrapper">
             <table>
                 <thead>
                     <tr>
-                        <th class="sortable" onclick="toggleSort('item')">品項 <span id="sort-item" class="sort-indicator">⇅</span></th>
-                        <th class="sortable" onclick="toggleSort('date')">入庫日期 <span id="sort-date" class="sort-indicator">⇅</span></th>
-                        <th class="sortable" onclick="toggleSort('age')">庫齡天數 <span id="sort-age" class="sort-indicator">⇅</span></th>
-                        <th class="sortable" onclick="toggleSort('qty')">庫存量 <span id="sort-qty" class="sort-indicator">⇅</span></th>
-                        <th class="sortable" onclick="toggleSort('price')">單價 <span id="sort-price" class="sort-indicator">⇅</span></th>
-                        <th class="sortable" onclick="toggleSort('area')">區域 <span id="sort-area" class="sort-indicator">⇅</span></th>
-                        <th>庫存狀態與建議</th>
-                        <th>操作</th>
+                        <th id="th-item" class="sortable" onclick="toggleSort('item')">品項 <span id="sort-item" class="sort-indicator">⇅</span></th>
+                        <th id="th-date" class="sortable" onclick="toggleSort('date')">入庫日期 <span id="sort-date" class="sort-indicator">⇅</span></th>
+                        <th id="th-age" class="sortable" onclick="toggleSort('age')">庫齡天數 <span id="sort-age" class="sort-indicator">⇅</span></th>
+                        <th id="th-qty" class="sortable" onclick="toggleSort('qty')">庫存量 <span id="sort-qty" class="sort-indicator">⇅</span></th>
+                        <th id="th-price" class="sortable" onclick="toggleSort('price')">單價 <span id="sort-price" class="sort-indicator">⇅</span></th>
+                        <th id="th-area" class="sortable" onclick="toggleSort('area')">區域 <span id="sort-area" class="sort-indicator">⇅</span></th>
+                        <th id="th-status">庫存狀態與建議</th>
                     </tr>
                 </thead>
                 <tbody id="tbody"></tbody>
@@ -866,21 +995,6 @@ tr.table-row-hover:hover td {
         <div class="pagination-bar" id="pagination-bar"></div>
     </section>
 
-</div>
-
-<!-- RECORD EDIT MODAL -->
-<div id="record-modal-backdrop" class="record-modal-backdrop" onclick="if(event.target.id==='record-modal-backdrop') closeRecordModal();">
-  <div class="record-modal">
-    <div class="record-modal-header">
-      <h2 id="record-modal-title">新增資料</h2>
-      <button class="close-btn" onclick="closeRecordModal()">&times;</button>
-    </div>
-    <div id="record-modal-body" class="record-modal-body"></div>
-    <div class="record-modal-footer">
-      <button class="btn btn-secondary" onclick="closeRecordModal()">取消</button>
-      <button class="btn btn-primary" onclick="saveRecordModal()">儲存</button>
-    </div>
-  </div>
 </div>
 
 <!-- DETAILED DIAGNOSIS SLIDE DRAWER -->
@@ -897,29 +1011,1101 @@ tr.table-row-hover:hover td {
     </div>
 </div>
 
+<!-- AI ASSISTANT UI -->
+<button class="ai-fab" onclick="toggleChat()" title="開啟 AI 助手">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+</button>
+
+<div id="chat-window" class="chat-window">
+    <div class="chat-header">
+        <h3 style="margin:0;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+            SCM 智能助手
+        </h3>
+        <button class="close-btn" onclick="toggleChat()" style="font-size: 1.2rem;">&times;</button>
+    </div>
+    <div id="chat-messages" class="chat-messages">
+        <div class="message ai" id="welcome-msg">
+            您好！我是 SCM 智能助手。您可以問我關於庫存數據、呆滯品分析或建議處置對策。
+            <div class="suggested-questions" id="suggestions">
+                <div class="suggestion-chip" onclick="askQuestion('有哪些高風險呆滯品？')">高風險呆滯品</div>
+                <div class="suggestion-chip" onclick="askQuestion('目前庫存量最高的區域？')">庫存最高區域</div>
+                <div class="suggestion-chip" onclick="askQuestion('如何優化資金周轉？')">優化建議</div>
+            </div>
+        </div>
+    </div>
+    <div class="chat-input-area">
+        <div class="input-row">
+            <button id="voice-btn" class="chat-send" style="background: rgba(255,255,255,0.1); padding: 0.6rem;" onclick="toggleVoiceInput()" title="語音輸入">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+            </button>
+            <input type="text" id="chat-input" class="chat-input" placeholder="輸入您的問題..." onkeypress="if(event.key === 'Enter') sendMessage()">
+            <button class="chat-send" onclick="sendMessage()">發送</button>
+        </div>
+    </div>
+</div>
+
 <script>
-// JSON Data Embedded: no PowerShell needed
-const defaultRawData = [{"品項": "鮮奶茶", "入庫日期": "1 Feb 2026", "庫存量": 331.0, "單價": "97.1", "區域": "南區"}, {"品項": "鮮奶茶", "入庫日期": "2026/2/2", "庫存量": 332.0, "單價": "498.3元", "區域": "中區"}, {"品項": "巧克力餅乾", "入庫日期": "3 Apr 2026", "庫存量": 238.0, "單價": "170.1", "區域": "中區"}, {"品項": "果醬", "入庫日期": "4 May 2026", "庫存量": 13.0, "單價": "380.8元", "區域": "北區"}, {"品項": "能量棒", "入庫日期": "2026-05-05", "庫存量": 19.0, "單價": "431.2元", "區域": "南區"}, {"品項": "鮮奶茶", "入庫日期": "2026/6/6", "庫存量": 442.0, "單價": "104.4", "區域": "中區"}, {"品項": "巧克力餅乾", "入庫日期": "20260707", "庫存量": 415.0, "單價": "338.9", "區域": "東區"}, {"品項": "能量棒", "入庫日期": "8 Mar 2026", "庫存量": 189.0, "單價": "306.8元", "區域": "東區"}, {"品項": "能量棒", "入庫日期": "9 Apr 2026", "庫存量": 91.0, "單價": "477.8元", "區域": "南區"}, {"品項": "巧克力餅乾", "入庫日期": "10 May 2026", "庫存量": 352.0, "單價": "312.9", "區域": "北區"}, {"品項": "杯裝優格", "入庫日期": "20261111", "庫存量": 357.0, "單價": "258.3", "區域": "南區"}, {"品項": "布丁", "入庫日期": "2026-12-12", "庫存量": 310.0, "單價": "14.2元", "區域": "中區"}, {"品項": "原味吐司", "入庫日期": "2026-01-13", "庫存量": 280.0, "單價": "92.3", "區域": ""}, {"品項": "即食雞胸", "入庫日期": "20260214", "庫存量": 231.0, "單價": "366.8", "區域": "南區"}, {"品項": "巧克力餅乾", "入庫日期": "20260315", "庫存量": 249.0, "單價": "130.6", "區域": "中區"}, {"品項": "冷凍水餃", "入庫日期": "2026-04-16", "庫存量": 154.0, "單價": "41.3元", "區域": "中區"}, {"品項": "布丁", "入庫日期": "20260517", "庫存量": 445.0, "單價": "14.7元", "區域": "北區"}, {"品項": "堅果包", "入庫日期": "18 Jan 2026", "庫存量": 90.0, "單價": "210.4", "區域": "東區"}, {"品項": "堅果包", "入庫日期": "19 Feb 2026", "庫存量": 439.0, "單價": "93.2", "區域": "中區"}, {"品項": "能量棒", "入庫日期": "20260820", "庫存量": 187.0, "單價": "238.4元", "區域": "東區"}, {"品項": "泡芙", "入庫日期": "2026-09-21", "庫存量": 220.0, "單價": "396.8元", "區域": "北區"}, {"品項": "湯包", "入庫日期": "20261022", "庫存量": 52.0, "單價": "111.5", "區域": "中區"}, {"品項": "堅果包", "入庫日期": "2026/11/23", "庫存量": 481.0, "單價": "287.0元", "區域": "東區"}, {"品項": "沙拉醬", "入庫日期": "2026-12-24", "庫存量": 17.0, "單價": "488.4元", "區域": "中區"}, {"品項": "蛋捲", "入庫日期": "2026/1/25", "庫存量": 329.0, "單價": "", "區域": "南區"}, {"品項": "巧克力餅乾", "入庫日期": "2026/2/26", "庫存量": 482.0, "單價": "213.7元", "區域": "東區"}, {"品項": "杯裝優格", "入庫日期": "2026-03-27", "庫存量": 212.0, "單價": "166.9元", "區域": "南區"}, {"品項": "即食雞胸", "入庫日期": "2026-04-28", "庫存量": 482.0, "單價": "10.5元", "區域": "東區"}, {"品項": "湯包", "入庫日期": "1 Jun 2026", "庫存量": 440.0, "單價": "129.5", "區域": ""}, {"品項": "氣泡飲", "入庫日期": "2 Jan 2026", "庫存量": 298.0, "單價": "153.4元", "區域": "東區"}, {"品項": "氣泡飲", "入庫日期": "2026/7/3", "庫存量": 221.0, "單價": "338.7元", "區域": "東區"}, {"品項": "布丁", "入庫日期": "2026-08-04", "庫存量": 20.0, "單價": "91.9", "區域": "中區"}, {"品項": "鮮奶茶", "入庫日期": "20260905", "庫存量": 10.0, "單價": "300.9元", "區域": "中區"}, {"品項": "冷凍水餃", "入庫日期": "20261006", "庫存量": 418.0, "單價": "29.7元", "區域": "北區"}, {"品項": "能量棒", "入庫日期": "2026/11/7", "庫存量": 98.0, "單價": "253.5元", "區域": "中區"}, {"品項": "布丁", "入庫日期": "2026-12-08", "庫存量": 333.0, "單價": "341.4", "區域": "中區"}, {"品項": "能量棒", "入庫日期": "2026/1/9", "庫存量": 150.0, "單價": "449.8元", "區域": "北區"}, {"品項": "堅果包", "入庫日期": "20260210", "庫存量": 143.0, "單價": "472.9", "區域": "南區"}, {"品項": "湯包", "入庫日期": "11 Apr 2026", "庫存量": 317.0, "單價": "357.5", "區域": "東區"}, {"品項": "原味吐司", "入庫日期": "12 May 2026", "庫存量": 471.0, "單價": "387.7", "區域": "東區"}, {"品項": "能量棒", "入庫日期": "13 Jun 2026", "庫存量": 345.0, "單價": "404.0", "區域": "南區"}, {"品項": "巧克力餅乾", "入庫日期": "20260614", "庫存量": 188.0, "單價": "489.4元", "區域": "東區"}, {"品項": "能量棒", "入庫日期": "15 Feb 2026", "庫存量": 426.0, "單價": "433.1", "區域": "南區"}, {"品項": "冷凍水餃", "入庫日期": "2026/8/16", "庫存量": 47.0, "單價": "282.5", "區域": "北區"}, {"品項": "湯包", "入庫日期": "20260917", "庫存量": 149.0, "單價": "206.1", "區域": "中區"}, {"品項": "能量棒", "入庫日期": "2026/10/18", "庫存量": 156.0, "單價": "239.1", "區域": "南區"}, {"品項": "氣泡飲", "入庫日期": "2026/11/19", "庫存量": 220.0, "單價": "406.4元", "區域": "南區"}, {"品項": "能量棒", "入庫日期": "2026/12/20", "庫存量": "", "單價": "221.2", "區域": "南區"}, {"品項": "果醬", "入庫日期": "20260121", "庫存量": 47.0, "單價": "336.6元", "區域": "中區"}, {"品項": "沙拉醬", "入庫日期": "2026-02-22", "庫存量": 113.0, "單價": "204.9元", "區域": "南區"}, {"品項": "杯裝優格", "入庫日期": "20260323", "庫存量": 451.0, "單價": "355.5元", "區域": "東區"}, {"品項": "冷凍水餃", "入庫日期": "2026/4/24", "庫存量": 220.0, "單價": "148.5元", "區域": "中區"}, {"品項": "", "入庫日期": "20260525", "庫存量": 91.0, "單價": "496.8元", "區域": "東區"}, {"品項": "巧克力餅乾", "入庫日期": "2026-06-26", "庫存量": 176.0, "單價": "260.6", "區域": "中區"}, {"品項": "氣泡飲", "入庫日期": "20260727", "庫存量": 303.0, "單價": "291.5", "區域": "北區"}, {"品項": "鮮奶茶", "入庫日期": "2026/8/28", "庫存量": 178.0, "單價": "56.4元", "區域": "北區"}, {"品項": "蛋捲", "入庫日期": "1 Apr 2026", "庫存量": 100.0, "單價": "459.6元", "區域": "北區"}, {"品項": "杯裝優格", "入庫日期": "2026/10/2", "庫存量": 140.0, "單價": "130.8元", "區域": "中區"}, {"品項": "布丁", "入庫日期": "20261103", "庫存量": 168.0, "單價": "26.6元", "區域": "北區"}, {"品項": "杯裝優格", "入庫日期": "2026-12-04", "庫存量": 288.0, "單價": "422.3元", "區域": "北區"}, {"品項": "蛋捲", "入庫日期": "20260105", "庫存量": 434.0, "單價": "431.3元", "區域": "北區"}, {"品項": "布丁", "入庫日期": "20260206", "庫存量": 136.0, "單價": "116.0", "區域": "東區"}, {"品項": "", "入庫日期": "2026/3/7", "庫存量": 418.0, "單價": "234.7元", "區域": "北區"}, {"品項": "原味吐司", "入庫日期": "20260408", "庫存量": 58.0, "單價": "21.0", "區域": "中區"}, {"品項": "冷凍水餃", "入庫日期": "20260509", "庫存量": 162.0, "單價": "497.0", "區域": "中區"}, {"品項": "氣泡飲", "入庫日期": "2026-06-10", "庫存量": 229.0, "單價": "215.4", "區域": "東區"}, {"品項": "杯裝優格", "入庫日期": "2026-07-11", "庫存量": 457.0, "單價": "177.9", "區域": "中區"}, {"品項": "泡芙", "入庫日期": "20260812", "庫存量": 25.0, "單價": "167.8", "區域": "南區"}, {"品項": "氣泡飲", "入庫日期": "20260913", "庫存量": 75.0, "單價": "409.5元", "區域": "北區"}, {"品項": "冷凍水餃", "入庫日期": "14 May 2026", "庫存量": 111.0, "單價": "99.2", "區域": "北區"}, {"品項": "沙拉醬", "入庫日期": "20261115", "庫存量": 240.0, "單價": "261.8元", "區域": "南區"}, {"品項": "能量棒", "入庫日期": "20261216", "庫存量": 43.0, "單價": "209.0", "區域": "中區"}, {"品項": "冷凍水餃", "入庫日期": "17 Feb 2026", "庫存量": 53.0, "單價": "236.5元", "區域": "南區"}, {"品項": "堅果包", "入庫日期": "20260218", "庫存量": 54.0, "單價": "437.7元", "區域": "北區"}, {"品項": "即食雞胸", "入庫日期": "20260319", "庫存量": 345.0, "單價": "34.5元", "區域": "東區"}, {"品項": "冷凍水餃", "入庫日期": "2026/4/20", "庫存量": 4.0, "單價": "202.1", "區域": "中區"}, {"品項": "湯包", "入庫日期": "2026-05-21", "庫存量": 23.0, "單價": "209.7", "區域": "北區"}, {"品項": "果醬", "入庫日期": "22 Jan 2026", "庫存量": "", "單價": "17.1", "區域": "南區"}, {"品項": "蛋捲", "入庫日期": "2026/7/23", "庫存量": 132.0, "單價": "465.4元", "區域": "南區"}, {"品項": "能量棒", "入庫日期": "2026/8/24", "庫存量": 309.0, "單價": "50.7", "區域": "南區"}, {"品項": "鮮奶茶", "入庫日期": "2026/9/25", "庫存量": 225.0, "單價": "74.8元", "區域": "東區"}, {"品項": "氣泡飲", "入庫日期": "2026-10-26", "庫存量": 449.0, "單價": "61.1", "區域": "南區"}, {"品項": "堅果包", "入庫日期": "27 Jun 2026", "庫存量": 400.0, "單價": "445.8", "區域": "南區"}, {"品項": "原味吐司", "入庫日期": "28 Jan 2026", "庫存量": 266.0, "單價": "158.4", "區域": "南區"}, {"品項": "", "入庫日期": "2026-01-01", "庫存量": 420.0, "單價": "282.0", "區域": "北區"}, {"品項": "巧克力餅乾", "入庫日期": "2 Mar 2026", "庫存量": 132.0, "單價": "243.6元", "區域": "北區"}, {"品項": "泡芙", "入庫日期": "20260303", "庫存量": 32.0, "單價": "374.3元", "區域": "北區"}, {"品項": "蛋捲", "入庫日期": "2026/4/4", "庫存量": 399.0, "單價": "145.4", "區域": "中區"}, {"品項": "布丁", "入庫日期": "2026-05-05", "庫存量": 30.0, "單價": "195.8元", "區域": "南區"}, {"品項": "湯包", "入庫日期": "2026/6/6", "庫存量": 438.0, "單價": "291.3元", "區域": "中區"}, {"品項": "沙拉醬", "入庫日期": "20260707", "庫存量": 19.0, "單價": "324.2", "區域": "北區"}, {"品項": "果醬", "入庫日期": "20260808", "庫存量": 464.0, "單價": "376.4元", "區域": "北區"}, {"品項": "堅果包", "入庫日期": "2026/9/9", "庫存量": 180.0, "單價": "207.6元", "區域": "東區"}, {"品項": "布丁", "入庫日期": "20261010", "庫存量": 496.0, "單價": "226.2", "區域": "東區"}, {"品項": "杯裝優格", "入庫日期": "2026/11/11", "庫存量": 443.0, "單價": "358.5", "區域": "中區"}, {"品項": "冷凍水餃", "入庫日期": "12 Jan 2026", "庫存量": 349.0, "單價": "270.6元", "區域": "南區"}, {"品項": "果醬", "入庫日期": "20260113", "庫存量": 93.0, "單價": "194.6元", "區域": "南區"}, {"品項": "泡芙", "入庫日期": "20260214", "庫存量": 472.0, "單價": "387.8", "區域": "東區"}, {"品項": "氣泡飲", "入庫日期": "15 Apr 2026", "庫存量": 19.0, "單價": "342.7", "區域": "北區"}, {"品項": "布丁", "入庫日期": "2026-04-16", "庫存量": 413.0, "單價": "132.1", "區域": "東區"}, {"品項": "堅果包", "入庫日期": "20260517", "庫存量": 250.0, "單價": "35.3元", "區域": "南區"}, {"品項": "湯包", "入庫日期": "2026/6/18", "庫存量": 267.0, "單價": "450.4", "區域": "北區"}, {"品項": "沙拉醬", "入庫日期": "2026-07-19", "庫存量": 438.0, "單價": "24.6元", "區域": "中區"}, {"品項": "氣泡飲", "入庫日期": "20 Mar 2026", "庫存量": 411.0, "單價": "156.8", "區域": "東區"}, {"品項": "冷凍水餃", "入庫日期": "20260921", "庫存量": 125.0, "單價": "249.8元", "區域": "中區"}, {"品項": "湯包", "入庫日期": "2026/10/22", "庫存量": 5.0, "單價": "104.1元", "區域": "南區"}, {"品項": "氣泡飲", "入庫日期": "20261123", "庫存量": 17.0, "單價": "444.4", "區域": "南區"}, {"品項": "能量棒", "入庫日期": "2026-12-24", "庫存量": 343.0, "單價": "120.5元", "區域": "中區"}, {"品項": "蛋捲", "入庫日期": "20260125", "庫存量": 341.0, "單價": "424.4元", "區域": "中區"}, {"品項": "巧克力餅乾", "入庫日期": "20260226", "庫存量": 172.0, "單價": "174.3", "區域": "中區"}, {"品項": "堅果包", "入庫日期": "2026/3/27", "庫存量": 90.0, "單價": "235.7元", "區域": "中區"}, {"品項": "氣泡飲", "入庫日期": "2026/4/28", "庫存量": 264.0, "單價": "427.6", "區域": "南區"}, {"品項": "杯裝優格", "入庫日期": "1 Jun 2026", "庫存量": 390.0, "單價": "52.2元", "區域": "南區"}, {"品項": "蛋捲", "入庫日期": "2026-06-02", "庫存量": 357.0, "單價": "417.9元", "區域": "中區"}, {"品項": "冷凍水餃", "入庫日期": "2026-07-03", "庫存量": 26.0, "單價": "285.1元", "區域": "南區"}, {"品項": "巧克力餅乾", "入庫日期": "20260804", "庫存量": 156.0, "單價": "303.1元", "區域": "南區"}, {"品項": "巧克力餅乾", "入庫日期": "5 Apr 2026", "庫存量": 20.0, "單價": "392.4", "區域": "南區"}, {"品項": "杯裝優格", "入庫日期": "2026-10-06", "庫存量": 321.0, "單價": "302.4", "區域": "東區"}, {"品項": "即食雞胸", "入庫日期": "20261107", "庫存量": 232.0, "單價": "420.6元", "區域": "北區"}, {"品項": "能量棒", "入庫日期": "2026-12-08", "庫存量": 427.0, "單價": "124.0元", "區域": "南區"}, {"品項": "泡芙", "入庫日期": "20260109", "庫存量": 416.0, "單價": "363.3", "區域": "東區"}, {"品項": "堅果包", "入庫日期": "10 Mar 2026", "庫存量": 100.0, "單價": "425.4", "區域": "東區"}, {"品項": "鮮奶茶", "入庫日期": "", "庫存量": 102.0, "單價": "141.4", "區域": "南區"}, {"品項": "堅果包", "入庫日期": "12 May 2026", "庫存量": 315.0, "單價": "", "區域": "南區"}, {"品項": "蛋捲", "入庫日期": "2026/5/13", "庫存量": 138.0, "單價": "39.2元", "區域": "東區"}, {"品項": "泡芙", "入庫日期": "2026/6/14", "庫存量": 141.0, "單價": "218.6元", "區域": "東區"}, {"品項": "巧克力餅乾", "入庫日期": "20260715", "庫存量": 312.0, "單價": "312.1元", "區域": "北區"}, {"品項": "果醬", "入庫日期": "2026/8/16", "庫存量": 257.0, "單價": "392.2元", "區域": "中區"}, {"品項": "布丁", "入庫日期": "2026-09-17", "庫存量": 276.0, "單價": "169.8元", "區域": "北區"}, {"品項": "杯裝優格", "入庫日期": "2026/10/18", "庫存量": 87.0, "單價": "98.6", "區域": "東區"}, {"品項": "氣泡飲", "入庫日期": "2026/11/19", "庫存量": 393.0, "單價": "487.0元", "區域": "南區"}, {"品項": "布丁", "入庫日期": "2026/12/20", "庫存量": 200.0, "單價": "74.6", "區域": "中區"}, {"品項": "即食雞胸", "入庫日期": "21 Feb 2026", "庫存量": 174.0, "單價": "60.8元", "區域": "南區"}, {"品項": "蛋捲", "入庫日期": "20260222", "庫存量": 229.0, "單價": "388.5", "區域": "東區"}, {"品項": "堅果包", "入庫日期": "2026/3/23", "庫存量": 94.0, "單價": "11.4", "區域": "南區"}, {"品項": "湯包", "入庫日期": "2026-04-24", "庫存量": 64.0, "單價": "323.2", "區域": "東區"}, {"品項": "即食雞胸", "入庫日期": "20260525", "庫存量": 219.0, "單價": "243.6元", "區域": "南區"}, {"品項": "原味吐司", "入庫日期": "2026-06-26", "庫存量": 388.0, "單價": "463.4元", "區域": "中區"}, {"品項": "杯裝優格", "入庫日期": "20260727", "庫存量": 7.0, "單價": "340.4元", "區域": "南區"}, {"品項": "蛋捲", "入庫日期": "2026-08-28", "庫存量": 428.0, "單價": "132.2元", "區域": "中區"}, {"品項": "即食雞胸", "入庫日期": "2026/9/1", "庫存量": 388.0, "單價": "462.2", "區域": "中區"}, {"品項": "沙拉醬", "入庫日期": "2 May 2026", "庫存量": 412.0, "單價": "457.9元", "區域": "北區"}, {"品項": "氣泡飲", "入庫日期": "20261103", "庫存量": 232.0, "單價": "393.3", "區域": "中區"}, {"品項": "巧克力餅乾", "入庫日期": "2026-12-04", "庫存量": 67.0, "單價": "465.8", "區域": "東區"}, {"品項": "沙拉醬", "入庫日期": "20260105", "庫存量": 270.0, "單價": "366.1元", "區域": "東區"}, {"品項": "巧克力餅乾", "入庫日期": "20260206", "庫存量": 149.0, "單價": "461.6元", "區域": "東區"}, {"品項": "沙拉醬", "入庫日期": "20260307", "庫存量": 147.0, "單價": "119.0元", "區域": "北區"}, {"品項": "原味吐司", "入庫日期": "2026-04-08", "庫存量": 220.0, "單價": "280.3", "區域": "南區"}, {"品項": "堅果包", "入庫日期": "20260509", "庫存量": 234.0, "單價": "432.0元", "區域": "中區"}, {"品項": "泡芙", "入庫日期": "2026-06-10", "庫存量": 170.0, "單價": "57.8", "區域": "北區"}, {"品項": "蛋捲", "入庫日期": "2026/7/23", "庫存量": 132.0, "單價": "465.4元", "區域": "南區"}];
-let rawData = loadInventoryData();
-
-function loadInventoryData(){
-    try {
-        const saved = localStorage.getItem("SCM005_inventory_data");
-        if(saved) return JSON.parse(saved);
-    } catch(e) { console.warn("讀取暫存資料失敗", e); }
-    return JSON.parse(JSON.stringify(defaultRawData));
-}
-
-function saveInventoryData(){
-    localStorage.setItem("SCM005_inventory_data", JSON.stringify(rawData));
-}
-
-function refreshAll(){
-    rebuildData();
-    initArea();
-    currentPage = 1;
-    render();
-}
+// JSON Data Injected by PowerShell
+const rawData = [
+    {
+        "品項":  "鮮奶茶",
+        "入庫日期":  "1 Feb 2026",
+        "庫存量":  "331",
+        "單價":  "97.1",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "鮮奶茶",
+        "入庫日期":  "2026/2/2",
+        "庫存量":  "332",
+        "單價":  "498.3元",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "巧克力餅乾",
+        "入庫日期":  "3 Apr 2026",
+        "庫存量":  "238",
+        "單價":  "170.1",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "果醬",
+        "入庫日期":  "4 May 2026",
+        "庫存量":  "13",
+        "單價":  "380.8元",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "能量棒",
+        "入庫日期":  "2026-05-05",
+        "庫存量":  "19",
+        "單價":  "431.2元",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "鮮奶茶",
+        "入庫日期":  "2026/6/6",
+        "庫存量":  "442",
+        "單價":  "104.4",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "巧克力餅乾",
+        "入庫日期":  "20260707",
+        "庫存量":  "415",
+        "單價":  "338.9",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "能量棒",
+        "入庫日期":  "8 Mar 2026",
+        "庫存量":  "189",
+        "單價":  "306.8元",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "能量棒",
+        "入庫日期":  "9 Apr 2026",
+        "庫存量":  "91",
+        "單價":  "477.8元",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "巧克力餅乾",
+        "入庫日期":  "10 May 2026",
+        "庫存量":  "352",
+        "單價":  "312.9",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "杯裝優格",
+        "入庫日期":  "20261111",
+        "庫存量":  "357",
+        "單價":  "258.3",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "布丁",
+        "入庫日期":  "2026-12-12",
+        "庫存量":  "310",
+        "單價":  "14.2元",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "原味吐司",
+        "入庫日期":  "2026-01-13",
+        "庫存量":  "280",
+        "單價":  "92.3",
+        "區域":  ""
+    },
+    {
+        "品項":  "即食雞胸",
+        "入庫日期":  "20260214",
+        "庫存量":  "231",
+        "單價":  "366.8",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "巧克力餅乾",
+        "入庫日期":  "20260315",
+        "庫存量":  "249",
+        "單價":  "130.6",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "冷凍水餃",
+        "入庫日期":  "2026-04-16",
+        "庫存量":  "154",
+        "單價":  "41.3元",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "布丁",
+        "入庫日期":  "20260517",
+        "庫存量":  "445",
+        "單價":  "14.7元",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "堅果包",
+        "入庫日期":  "18 Jan 2026",
+        "庫存量":  "90",
+        "單價":  "210.4",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "堅果包",
+        "入庫日期":  "19 Feb 2026",
+        "庫存量":  "439",
+        "單價":  "93.2",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "能量棒",
+        "入庫日期":  "20260820",
+        "庫存量":  "187",
+        "單價":  "238.4元",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "泡芙",
+        "入庫日期":  "2026-09-21",
+        "庫存量":  "220",
+        "單價":  "396.8元",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "湯包",
+        "入庫日期":  "20261022",
+        "庫存量":  "52",
+        "單價":  "111.5",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "堅果包",
+        "入庫日期":  "2026/11/23",
+        "庫存量":  "481",
+        "單價":  "287.0元",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "沙拉醬",
+        "入庫日期":  "2026-12-24",
+        "庫存量":  "17",
+        "單價":  "488.4元",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "蛋捲",
+        "入庫日期":  "2026/1/25",
+        "庫存量":  "329",
+        "單價":  "",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "巧克力餅乾",
+        "入庫日期":  "2026/2/26",
+        "庫存量":  "482",
+        "單價":  "213.7元",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "杯裝優格",
+        "入庫日期":  "2026-03-27",
+        "庫存量":  "212",
+        "單價":  "166.9元",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "即食雞胸",
+        "入庫日期":  "2026-04-28",
+        "庫存量":  "482",
+        "單價":  "10.5元",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "湯包",
+        "入庫日期":  "1 Jun 2026",
+        "庫存量":  "440",
+        "單價":  "129.5",
+        "區域":  ""
+    },
+    {
+        "品項":  "氣泡飲",
+        "入庫日期":  "2 Jan 2026",
+        "庫存量":  "298",
+        "單價":  "153.4元",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "氣泡飲",
+        "入庫日期":  "2026/7/3",
+        "庫存量":  "221",
+        "單價":  "338.7元",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "布丁",
+        "入庫日期":  "2026-08-04",
+        "庫存量":  "20",
+        "單價":  "91.9",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "鮮奶茶",
+        "入庫日期":  "20260905",
+        "庫存量":  "10",
+        "單價":  "300.9元",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "冷凍水餃",
+        "入庫日期":  "20261006",
+        "庫存量":  "418",
+        "單價":  "29.7元",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "能量棒",
+        "入庫日期":  "2026/11/7",
+        "庫存量":  "98",
+        "單價":  "253.5元",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "布丁",
+        "入庫日期":  "2026-12-08",
+        "庫存量":  "333",
+        "單價":  "341.4",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "能量棒",
+        "入庫日期":  "2026/1/9",
+        "庫存量":  "150",
+        "單價":  "449.8元",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "堅果包",
+        "入庫日期":  "20260210",
+        "庫存量":  "143",
+        "單價":  "472.9",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "湯包",
+        "入庫日期":  "11 Apr 2026",
+        "庫存量":  "317",
+        "單價":  "357.5",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "原味吐司",
+        "入庫日期":  "12 May 2026",
+        "庫存量":  "471",
+        "單價":  "387.7",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "能量棒",
+        "入庫日期":  "13 Jun 2026",
+        "庫存量":  "345",
+        "單價":  "404.0",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "巧克力餅乾",
+        "入庫日期":  "20260614",
+        "庫存量":  "188",
+        "單價":  "489.4元",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "能量棒",
+        "入庫日期":  "15 Feb 2026",
+        "庫存量":  "426",
+        "單價":  "433.1",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "冷凍水餃",
+        "入庫日期":  "2026/8/16",
+        "庫存量":  "47",
+        "單價":  "282.5",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "湯包",
+        "入庫日期":  "20260917",
+        "庫存量":  "149",
+        "單價":  "206.1",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "能量棒",
+        "入庫日期":  "2026/10/18",
+        "庫存量":  "156",
+        "單價":  "239.1",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "氣泡飲",
+        "入庫日期":  "2026/11/19",
+        "庫存量":  "220",
+        "單價":  "406.4元",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "能量棒",
+        "入庫日期":  "2026/12/20",
+        "庫存量":  "",
+        "單價":  "221.2",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "果醬",
+        "入庫日期":  "20260121",
+        "庫存量":  "47",
+        "單價":  "336.6元",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "沙拉醬",
+        "入庫日期":  "2026-02-22",
+        "庫存量":  "113",
+        "單價":  "204.9元",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "杯裝優格",
+        "入庫日期":  "20260323",
+        "庫存量":  "451",
+        "單價":  "355.5元",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "冷凍水餃",
+        "入庫日期":  "2026/4/24",
+        "庫存量":  "220",
+        "單價":  "148.5元",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "",
+        "入庫日期":  "20260525",
+        "庫存量":  "91",
+        "單價":  "496.8元",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "巧克力餅乾",
+        "入庫日期":  "2026-06-26",
+        "庫存量":  "176",
+        "單價":  "260.6",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "氣泡飲",
+        "入庫日期":  "20260727",
+        "庫存量":  "303",
+        "單價":  "291.5",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "鮮奶茶",
+        "入庫日期":  "2026/8/28",
+        "庫存量":  "178",
+        "單價":  "56.4元",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "蛋捲",
+        "入庫日期":  "1 Apr 2026",
+        "庫存量":  "100",
+        "單價":  "459.6元",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "杯裝優格",
+        "入庫日期":  "2026/10/2",
+        "庫存量":  "140",
+        "單價":  "130.8元",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "布丁",
+        "入庫日期":  "20261103",
+        "庫存量":  "168",
+        "單價":  "26.6元",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "杯裝優格",
+        "入庫日期":  "2026-12-04",
+        "庫存量":  "288",
+        "單價":  "422.3元",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "蛋捲",
+        "入庫日期":  "20260105",
+        "庫存量":  "434",
+        "單價":  "431.3元",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "布丁",
+        "入庫日期":  "20260206",
+        "庫存量":  "136",
+        "單價":  "116.0",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "",
+        "入庫日期":  "2026/3/7",
+        "庫存量":  "418",
+        "單價":  "234.7元",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "原味吐司",
+        "入庫日期":  "20260408",
+        "庫存量":  "58",
+        "單價":  "21.0",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "冷凍水餃",
+        "入庫日期":  "20260509",
+        "庫存量":  "162",
+        "單價":  "497.0",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "氣泡飲",
+        "入庫日期":  "2026-06-10",
+        "庫存量":  "229",
+        "單價":  "215.4",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "杯裝優格",
+        "入庫日期":  "2026-07-11",
+        "庫存量":  "457",
+        "單價":  "177.9",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "泡芙",
+        "入庫日期":  "20260812",
+        "庫存量":  "25",
+        "單價":  "167.8",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "氣泡飲",
+        "入庫日期":  "20260913",
+        "庫存量":  "75",
+        "單價":  "409.5元",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "冷凍水餃",
+        "入庫日期":  "14 May 2026",
+        "庫存量":  "111",
+        "單價":  "99.2",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "沙拉醬",
+        "入庫日期":  "20261115",
+        "庫存量":  "240",
+        "單價":  "261.8元",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "能量棒",
+        "入庫日期":  "20261216",
+        "庫存量":  "43",
+        "單價":  "209.0",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "冷凍水餃",
+        "入庫日期":  "17 Feb 2026",
+        "庫存量":  "53",
+        "單價":  "236.5元",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "堅果包",
+        "入庫日期":  "20260218",
+        "庫存量":  "54",
+        "單價":  "437.7元",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "即食雞胸",
+        "入庫日期":  "20260319",
+        "庫存量":  "345",
+        "單價":  "34.5元",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "冷凍水餃",
+        "入庫日期":  "2026/4/20",
+        "庫存量":  "4",
+        "單價":  "202.1",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "湯包",
+        "入庫日期":  "2026-05-21",
+        "庫存量":  "23",
+        "單價":  "209.7",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "果醬",
+        "入庫日期":  "22 Jan 2026",
+        "庫存量":  "",
+        "單價":  "17.1",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "蛋捲",
+        "入庫日期":  "2026/7/23",
+        "庫存量":  "132",
+        "單價":  "465.4元",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "能量棒",
+        "入庫日期":  "2026/8/24",
+        "庫存量":  "309",
+        "單價":  "50.7",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "鮮奶茶",
+        "入庫日期":  "2026/9/25",
+        "庫存量":  "225",
+        "單價":  "74.8元",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "氣泡飲",
+        "入庫日期":  "2026-10-26",
+        "庫存量":  "449",
+        "單價":  "61.1",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "堅果包",
+        "入庫日期":  "27 Jun 2026",
+        "庫存量":  "400",
+        "單價":  "445.8",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "原味吐司",
+        "入庫日期":  "28 Jan 2026",
+        "庫存量":  "266",
+        "單價":  "158.4",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "",
+        "入庫日期":  "2026-01-01",
+        "庫存量":  "420",
+        "單價":  "282.0",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "巧克力餅乾",
+        "入庫日期":  "2 Mar 2026",
+        "庫存量":  "132",
+        "單價":  "243.6元",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "泡芙",
+        "入庫日期":  "20260303",
+        "庫存量":  "32",
+        "單價":  "374.3元",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "蛋捲",
+        "入庫日期":  "2026/4/4",
+        "庫存量":  "399",
+        "單價":  "145.4",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "布丁",
+        "入庫日期":  "2026-05-05",
+        "庫存量":  "30",
+        "單價":  "195.8元",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "湯包",
+        "入庫日期":  "2026/6/6",
+        "庫存量":  "438",
+        "單價":  "291.3元",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "沙拉醬",
+        "入庫日期":  "20260707",
+        "庫存量":  "19",
+        "單價":  "324.2",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "果醬",
+        "入庫日期":  "20260808",
+        "庫存量":  "464",
+        "單價":  "376.4元",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "堅果包",
+        "入庫日期":  "2026/9/9",
+        "庫存量":  "180",
+        "單價":  "207.6元",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "布丁",
+        "入庫日期":  "20261010",
+        "庫存量":  "496",
+        "單價":  "226.2",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "杯裝優格",
+        "入庫日期":  "2026/11/11",
+        "庫存量":  "443",
+        "單價":  "358.5",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "冷凍水餃",
+        "入庫日期":  "12 Jan 2026",
+        "庫存量":  "349",
+        "單價":  "270.6元",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "果醬",
+        "入庫日期":  "20260113",
+        "庫存量":  "93",
+        "單價":  "194.6元",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "泡芙",
+        "入庫日期":  "20260214",
+        "庫存量":  "472",
+        "單價":  "387.8",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "氣泡飲",
+        "入庫日期":  "15 Apr 2026",
+        "庫存量":  "19",
+        "單價":  "342.7",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "布丁",
+        "入庫日期":  "2026-04-16",
+        "庫存量":  "413",
+        "單價":  "132.1",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "堅果包",
+        "入庫日期":  "20260517",
+        "庫存量":  "250",
+        "單價":  "35.3元",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "湯包",
+        "入庫日期":  "2026/6/18",
+        "庫存量":  "267",
+        "單價":  "450.4",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "沙拉醬",
+        "入庫日期":  "2026-07-19",
+        "庫存量":  "438",
+        "單價":  "24.6元",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "氣泡飲",
+        "入庫日期":  "20 Mar 2026",
+        "庫存量":  "411",
+        "單價":  "156.8",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "冷凍水餃",
+        "入庫日期":  "20260921",
+        "庫存量":  "125",
+        "單價":  "249.8元",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "湯包",
+        "入庫日期":  "2026/10/22",
+        "庫存量":  "5",
+        "單價":  "104.1元",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "氣泡飲",
+        "入庫日期":  "20261123",
+        "庫存量":  "17",
+        "單價":  "444.4",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "能量棒",
+        "入庫日期":  "2026-12-24",
+        "庫存量":  "343",
+        "單價":  "120.5元",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "蛋捲",
+        "入庫日期":  "20260125",
+        "庫存量":  "341",
+        "單價":  "424.4元",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "巧克力餅乾",
+        "入庫日期":  "20260226",
+        "庫存量":  "172",
+        "單價":  "174.3",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "堅果包",
+        "入庫日期":  "2026/3/27",
+        "庫存量":  "90",
+        "單價":  "235.7元",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "氣泡飲",
+        "入庫日期":  "2026/4/28",
+        "庫存量":  "264",
+        "單價":  "427.6",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "杯裝優格",
+        "入庫日期":  "1 Jun 2026",
+        "庫存量":  "390",
+        "單價":  "52.2元",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "蛋捲",
+        "入庫日期":  "2026-06-02",
+        "庫存量":  "357",
+        "單價":  "417.9元",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "冷凍水餃",
+        "入庫日期":  "2026-07-03",
+        "庫存量":  "26",
+        "單價":  "285.1元",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "巧克力餅乾",
+        "入庫日期":  "20260804",
+        "庫存量":  "156",
+        "單價":  "303.1元",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "巧克力餅乾",
+        "入庫日期":  "5 Apr 2026",
+        "庫存量":  "20",
+        "單價":  "392.4",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "杯裝優格",
+        "入庫日期":  "2026-10-06",
+        "庫存量":  "321",
+        "單價":  "302.4",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "即食雞胸",
+        "入庫日期":  "20261107",
+        "庫存量":  "232",
+        "單價":  "420.6元",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "能量棒",
+        "入庫日期":  "2026-12-08",
+        "庫存量":  "427",
+        "單價":  "124.0元",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "泡芙",
+        "入庫日期":  "20260109",
+        "庫存量":  "416",
+        "單價":  "363.3",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "堅果包",
+        "入庫日期":  "10 Mar 2026",
+        "庫存量":  "100",
+        "單價":  "425.4",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "鮮奶茶",
+        "入庫日期":  "",
+        "庫存量":  "102",
+        "單價":  "141.4",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "堅果包",
+        "入庫日期":  "12 May 2026",
+        "庫存量":  "315",
+        "單價":  "",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "蛋捲",
+        "入庫日期":  "2026/5/13",
+        "庫存量":  "138",
+        "單價":  "39.2元",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "泡芙",
+        "入庫日期":  "2026/6/14",
+        "庫存量":  "141",
+        "單價":  "218.6元",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "巧克力餅乾",
+        "入庫日期":  "20260715",
+        "庫存量":  "312",
+        "單價":  "312.1元",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "果醬",
+        "入庫日期":  "2026/8/16",
+        "庫存量":  "257",
+        "單價":  "392.2元",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "布丁",
+        "入庫日期":  "2026-09-17",
+        "庫存量":  "276",
+        "單價":  "169.8元",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "杯裝優格",
+        "入庫日期":  "2026/10/18",
+        "庫存量":  "87",
+        "單價":  "98.6",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "氣泡飲",
+        "入庫日期":  "2026/11/19",
+        "庫存量":  "393",
+        "單價":  "487.0元",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "布丁",
+        "入庫日期":  "2026/12/20",
+        "庫存量":  "200",
+        "單價":  "74.6",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "即食雞胸",
+        "入庫日期":  "21 Feb 2026",
+        "庫存量":  "174",
+        "單價":  "60.8元",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "蛋捲",
+        "入庫日期":  "20260222",
+        "庫存量":  "229",
+        "單價":  "388.5",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "堅果包",
+        "入庫日期":  "2026/3/23",
+        "庫存量":  "94",
+        "單價":  "11.4",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "湯包",
+        "入庫日期":  "2026-04-24",
+        "庫存量":  "64",
+        "單價":  "323.2",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "即食雞胸",
+        "入庫日期":  "20260525",
+        "庫存量":  "219",
+        "單價":  "243.6元",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "原味吐司",
+        "入庫日期":  "2026-06-26",
+        "庫存量":  "388",
+        "單價":  "463.4元",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "杯裝優格",
+        "入庫日期":  "20260727",
+        "庫存量":  "7",
+        "單價":  "340.4元",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "蛋捲",
+        "入庫日期":  "2026-08-28",
+        "庫存量":  "428",
+        "單價":  "132.2元",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "即食雞胸",
+        "入庫日期":  "2026/9/1",
+        "庫存量":  "388",
+        "單價":  "462.2",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "沙拉醬",
+        "入庫日期":  "2 May 2026",
+        "庫存量":  "412",
+        "單價":  "457.9元",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "氣泡飲",
+        "入庫日期":  "20261103",
+        "庫存量":  "232",
+        "單價":  "393.3",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "巧克力餅乾",
+        "入庫日期":  "2026-12-04",
+        "庫存量":  "67",
+        "單價":  "465.8",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "沙拉醬",
+        "入庫日期":  "20260105",
+        "庫存量":  "270",
+        "單價":  "366.1元",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "巧克力餅乾",
+        "入庫日期":  "20260206",
+        "庫存量":  "149",
+        "單價":  "461.6元",
+        "區域":  "東區"
+    },
+    {
+        "品項":  "沙拉醬",
+        "入庫日期":  "20260307",
+        "庫存量":  "147",
+        "單價":  "119.0元",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "原味吐司",
+        "入庫日期":  "2026-04-08",
+        "庫存量":  "220",
+        "單價":  "280.3",
+        "區域":  "南區"
+    },
+    {
+        "品項":  "堅果包",
+        "入庫日期":  "20260509",
+        "庫存量":  "234",
+        "單價":  "432.0元",
+        "區域":  "中區"
+    },
+    {
+        "品項":  "泡芙",
+        "入庫日期":  "2026-06-10",
+        "庫存量":  "170",
+        "單價":  "57.8",
+        "區域":  "北區"
+    },
+    {
+        "品項":  "蛋捲",
+        "入庫日期":  "2026/7/23",
+        "庫存量":  "132",
+        "單價":  "465.4元",
+        "區域":  "南區"
+    }
+];
 
 // Update Live Clock to match system date
 const now = new Date();
@@ -932,60 +2118,51 @@ document.getElementById("live-time").innerText = now.toLocaleString('zh-TW', {
     hour12: false
 });
 
-// 1. 資料清洗與映射：保留互動功能，同時支援新增、編輯、刪除、匯入
-let data = [];
-
-function rebuildData(){
-    data = rawData.map((x, rawIndex) => {
-        const dateObj = parseDate(x["入庫日期"]);
-        const age = getAge(dateObj);
-        const qty = cleanNumber(x["庫存量"]);
-        const price = cleanNumber(x["單價"]);
-        const area = x["區域"] ? String(x["區域"]).trim() : "";
-        const computedStatus = getStatus(age, qty);
-        const manualStatus = normalizeStatus(x["庫存狀態"] || x["狀態"] || "");
-        const status = manualStatus || computedStatus;
-        const advice = String(x["處置建議"] || x["建議"] || "").trim() || getAdvice(status);
-        return {
-            _rawIndex: rawIndex,
-            item: x["品項"] ? String(x["品項"]).trim() : "未知名稱",
-            date: dateObj ? dateObj.toLocaleDateString('zh-TW', {year: 'numeric', month: '2-digit', day: '2-digit'}) : "無有效日期",
-            rawDate: x["入庫日期"] || "",
-            qty: qty,
-            price: price,
-            area: area || "未分類",
-            age: age !== null ? age : 0,
-            status: status,
-            advice: advice
-        };
-    });
-}
+// 1. 去除重複列 (Deduplicate Rows)
+const uniqueRawData = [];
+const seenRows = new Set();
+rawData.forEach(x => {
+    const rowKey = JSON.stringify(x);
+    if (!seenRows.has(rowKey)) {
+        seenRows.add(rowKey);
+        uniqueRawData.push(x);
+    }
+});
 
 // 2. 混合日期格式清洗 (Mixed Date Format Parser)
 function parseDate(v){
     if(!v) return null;
     let s = String(v).trim();
     if(s === "" || s.toLowerCase() === "null" || s.toLowerCase() === "undefined") return null;
+    
+    // 支援 YYYYMMDD 格式 (例如 20260707)
     if(/^\d{8}$/.test(s)){
         const y = s.substring(0, 4);
         const m = s.substring(4, 6);
         const d = s.substring(6, 8);
         return new Date(`${y}-${m}-${d}`);
     }
+    
+    // 支援標準 Date 轉換
     let d = new Date(s);
     if(!isNaN(d.getTime())) return d;
+    
+    // 支援點號相容 (2026.05.05)
     s = s.replace(/\./g, '/');
     d = new Date(s);
     if(!isNaN(d.getTime())) return d;
+    
     return null;
 }
 
+// 3. 混合單位與文字清洗 (Mixed Unit and Number Cleaner)
 function cleanNumber(v){
     if(v === undefined || v === null) return 0;
     let s = String(v).replace(/[,$\s元個包箱pcs]/g, '').trim();
     return Number(s) || 0;
 }
 
+// 4. 計算庫齡天數 (相對於 2026-06-04 基準日期)
 function getAge(dateObj){
     if(!dateObj) return null;
     const today = new Date("2026-06-04");
@@ -1008,26 +2185,34 @@ function getAdvice(status){
     return "庫存狀態正常";
 }
 
-function normalizeStatus(v){
-    const s = String(v || '').trim();
-    if(!s) return '';
-    if(['normal','正常','正常庫存','庫存狀態正常'].includes(s)) return 'normal';
-    if(['slow','庫齡偏高','觀察銷售速度並降低進貨量'].includes(s)) return 'slow';
-    if(['dead','疑似呆滯','疑似呆滯品','呆滯品','優先促銷、清倉或停止補貨'].includes(s)) return 'dead';
-    if(['unknown','資料缺失','請補齊入庫日期'].includes(s)) return 'unknown';
-    return '';
-}
+// 5. 數據清洗與映射
+const data = uniqueRawData.map(x => {
+    const dateObj = parseDate(x["入庫日期"]);
+    const age = getAge(dateObj);
+    const qty = cleanNumber(x["庫存量"]);
+    const price = cleanNumber(x["單價"]);
+    const area = x["區域"] ? String(x["區域"]).trim() : "";
+    const status = getStatus(age, qty);
+    
+    return {
+        item: x["品項"] ? String(x["品項"]).trim() : "未知名稱",
+        date: dateObj ? dateObj.toLocaleDateString('zh-TW', {year: 'numeric', month: '2-digit', day: '2-digit'}) : "無有效日期",
+        qty: qty,
+        price: price,
+        area: area || "未分類",
+        age: age !== null ? age : 0,
+        status: status,
+        advice: getAdvice(status)
+    };
+});
 
 // 6. 初始化區域下拉選單
 function initArea(){
     const areaSelect = document.getElementById("area");
-    const current = areaSelect.value;
-    areaSelect.innerHTML = `<option value="">全部區域</option>`;
     const uniqueAreas = [...new Set(data.map(x=>x.area).filter(Boolean))].sort();
     uniqueAreas.forEach(a=>{
         areaSelect.innerHTML += `<option value="${a}">${a}</option>`;
     });
-    if([...areaSelect.options].some(o=>o.value===current)) areaSelect.value = current;
 }
 
 // 7. 即時資料篩選邏輯
@@ -1035,13 +2220,11 @@ function filtered(){
     const key = document.getElementById("keyword").value.trim().toLowerCase();
     const area = document.getElementById("area").value;
     const status = document.getElementById("status").value;
-    const advice = document.getElementById("advice").value;
 
     return data.filter(x =>
         (!key || x.item.toLowerCase().includes(key)) &&
         (!area || x.area === area) &&
-        (!status || x.status === status) &&
-        (!advice || x.status === advice || x.advice.includes(document.getElementById("advice").selectedOptions[0]?.textContent || advice))
+        (!status || x.status === status)
     );
 }
 
@@ -1086,23 +2269,9 @@ function updateSortIndicators() {
     });
 }
 
-// 雙下拉選單同步控制邏輯 (Sync Status and Advice dropdowns)
-function syncStatusFilter(val) {
-    document.getElementById("advice").value = val;
-    currentPage = 1;
-    render();
-}
-
-function syncAdviceFilter(val) {
-    document.getElementById("status").value = val;
-    currentPage = 1;
-    render();
-}
-
 // 點擊卡片與狀態標籤進行快速篩選
 function filterByStatus(statusVal) {
     document.getElementById("status").value = statusVal;
-    document.getElementById("advice").value = statusVal; // 同步建議選單
     currentPage = 1; // 篩選時重設回第一頁
     render();
 }
@@ -1110,6 +2279,7 @@ function filterByStatus(statusVal) {
 // 8. 渲染表格與更新 KPI 指標
 function render(){
     let rows = filtered();
+    const t = translations[currentLang];
     
     // 更新指標卡數值 (不受分頁與排序影響，展現正確篩選全量值)
     const totalCount = rows.length;
@@ -1131,199 +2301,135 @@ function render(){
     const avgPrice = rows.length > 0 ? (rows.reduce((s, x) => s + x.price, 0) / rows.length) : 0;
     
     document.getElementById("total").innerText = totalCount;
-    document.getElementById("sub-total").innerText = `總庫存量: ${totalQty.toLocaleString()} 個`;
+    document.getElementById("sub-total").innerText = t.subTotal(totalQty);
     
     document.getElementById("normal-count").innerText = normalCount;
-    document.getElementById("sub-normal").innerText = `數量: ${normalQty.toLocaleString()} 個`;
+    document.getElementById("sub-normal").innerText = t.subNormal(normalQty);
     
     document.getElementById("slow-count").innerText = slowCount;
-    document.getElementById("sub-slow").innerText = `最大庫齡: ${maxAge} 天`;
+    document.getElementById("sub-slow").innerText = t.subSlow(maxAge);
     
     document.getElementById("dead-count").innerText = deadCount;
-    document.getElementById("sub-dead").innerText = `資金積壓: $${Math.round(deadValue).toLocaleString()}`;
+    document.getElementById("sub-dead").innerText = t.subDead(deadValue);
     
     document.getElementById("total-val").innerText = '$' + Math.round(totalVal).toLocaleString();
-    document.getElementById("sub-value").innerText = `品項均價: $${Math.round(avgPrice).toLocaleString()}`;
+    document.getElementById("sub-value").innerText = t.subVal(avgPrice);
 
-    // 進行排序
+    // 進行排序 (Rest of sort logic same)
     if (currentSortColumn) {
         rows.sort((a, b) => {
             let valA = a[currentSortColumn];
             let valB = b[currentSortColumn];
-
             if (currentSortColumn === 'date') {
                 if (valA === "無有效日期") valA = currentSortOrder === 'asc' ? '9999/99/99' : '0000/00/00';
                 if (valB === "無有效日期") valB = currentSortOrder === 'asc' ? '9999/99/99' : '0000/00/00';
             }
-
             if (typeof valA === 'string') {
-                return currentSortOrder === 'asc' 
-                    ? valA.localeCompare(valB, 'zh-Hant') 
-                    : valB.localeCompare(valA, 'zh-Hant');
+                return currentSortOrder === 'asc' ? valA.localeCompare(valB, 'zh-Hant') : valB.localeCompare(valA, 'zh-Hant');
             } else {
                 return currentSortOrder === 'asc' ? valA - valB : valB - valA;
             }
         });
     }
 
-    // 保存排序/篩選後的資料
     currentRows = rows;
-
-    // 計算分頁資訊
     const totalPages = Math.ceil(rows.length / rowsPerPage) || 1;
     if (currentPage > totalPages) currentPage = totalPages;
     if (currentPage < 1) currentPage = 1;
 
-    // 切割分頁資料
     const startIndex = (currentPage - 1) * rowsPerPage;
     const paginatedRows = rows.slice(startIndex, startIndex + rowsPerPage);
 
-    // 渲染表格資料
     const tbody = document.getElementById("tbody");
     tbody.innerHTML = paginatedRows.map((x, i) => {
-        let statusLabel = '正常庫存';
+        let statusLabel = t.statusNormal;
         let badgeClass = 'normal';
         let adviceClass = '';
         
         if (x.status === 'dead') {
-            statusLabel = '疑似呆滯';
+            statusLabel = t.statusDead.replace('疑似', '');
             badgeClass = 'dead';
             adviceClass = 'warn';
         } else if (x.status === 'slow') {
-            statusLabel = '庫齡偏高';
+            statusLabel = t.statusSlow;
             badgeClass = 'slow';
             adviceClass = 'slow-warn';
-        } else if (x.status === 'unknown') {
-            statusLabel = '資料缺失';
-            badgeClass = 'slow';
         }
 
         const actualIndex = startIndex + i;
+        const adviceText = (x.status === 'dead') ? t.deadAdvice : (x.status === 'slow' ? translations[currentLang].advice(1).split('<br>')[2].replace('2. <b>精準採購</b>：', '') : t.statusNormal);
 
         return `
-            <tr class="table-row-hover" onclick="showDiagnosis(${actualIndex})" title="點擊展開 AI 智能診斷分析">
+            <tr class="table-row-hover" onclick="showDiagnosis(${actualIndex})" title="AI Diagnosis">
                 <td><span class="item-name">${x.item}</span></td>
                 <td>${x.date}</td>
-                <td style="font-weight: 500;">${x.age} 天</td>
-                <td style="font-family: 'Inter', sans-serif;">${x.qty.toLocaleString()} 個</td>
+                <td style="font-weight: 500;">${x.age} ${currentLang==='zh-TW'?'天':'days'}</td>
+                <td style="font-family: 'Inter', sans-serif;">${x.qty.toLocaleString()}</td>
                 <td style="font-family: 'Inter', sans-serif; color: #a5f3fc;">$${x.price.toLocaleString()}</td>
                 <td>${x.area}</td>
                 <td>
-                    <span class="status-badge ${badgeClass}" onclick="event.stopPropagation(); filterByStatus('${x.status}')" title="點擊快速篩選此狀態">${statusLabel}</span>
-                    <div class="advice-text ${adviceClass}" onclick="event.stopPropagation(); filterByStatus('${x.status}')" style="margin-top: 4px;" title="點擊快速篩選此建議處置">${x.advice}</div>
-                </td>
-                <td onclick="event.stopPropagation();">
-                    <button class="action-btn" onclick="editRecord(${x._rawIndex})">編輯</button>
-                    <button class="action-btn delete" onclick="deleteRecord(${x._rawIndex})">刪除</button>
+                    <span class="status-badge ${badgeClass}" onclick="event.stopPropagation(); filterByStatus('${x.status}')">${statusLabel}</span>
+                    <div class="advice-text ${adviceClass}" style="margin-top: 4px;">${adviceText}</div>
                 </td>
             </tr>
         `;
     }).join("");
 
-    // 渲染分頁按鈕
     renderPagination(totalPages);
-    
-    // 更新圖表
     updateCharts(rows);
 }
 
-// 渲染分頁元件
-function renderPagination(totalPages) {
-    const nav = document.getElementById("pagination-bar");
-    nav.innerHTML = "";
-
-    if (totalPages <= 1) return; // 小於或等於一頁不顯示分頁列
-
-    const prevDisabled = currentPage === 1 ? 'disabled' : '';
-    nav.innerHTML += `<span class="page-link ${prevDisabled}" onclick="changePage(1)">«</span>`;
-    nav.innerHTML += `<span class="page-link ${prevDisabled}" onclick="changePage(${currentPage - 1})">‹</span>`;
-
-    const range = 2; // 左右各顯示 2 個頁碼
-    for (let i = 1; i <= totalPages; i++) {
-        if (i === 1 || i === totalPages || (i >= currentPage - range && i <= currentPage + range)) {
-            const activeClass = currentPage === i ? 'active' : '';
-            nav.innerHTML += `<span class="page-link ${activeClass}" onclick="changePage(${i})">${i}</span>`;
-        } else if (i === currentPage - range - 1 || i === currentPage + range + 1) {
-            nav.innerHTML += `<span style="color:var(--text-muted); padding:0 4px;">...</span>`;
-        }
-    }
-
-    const nextDisabled = currentPage === totalPages ? 'disabled' : '';
-    nav.innerHTML += `<span class="page-link ${nextDisabled}" onclick="changePage(${currentPage + 1})">›</span>`;
-    nav.innerHTML += `<span class="page-link ${nextDisabled}" onclick="changePage(${totalPages})">»</span>`;
-}
-
-function changePage(page) {
-    currentPage = page;
-    render();
-}
-
-// 9. AI 智能診斷側邊欄 (Drawer)
+// 9. AI 智能診斷側邊欄 (Simplified for local logic, using labels)
 function showDiagnosis(index) {
     const item = currentRows[index];
     if(!item) return;
+    const t = translations[currentLang];
     
     const drawer = document.getElementById("drawer");
     const content = document.getElementById("drawer-content");
     
-    const annualHoldingRate = 0.24;
     const inventoryVal = item.qty * item.price;
-    const holdingCost = inventoryVal * annualHoldingRate * (item.age / 365);
+    const annualHoldingRate = 0.24;
     const dailyCost = (inventoryVal * annualHoldingRate) / 365;
+    const holdingCost = inventoryVal * annualHoldingRate * (item.age / 365);
     
-    let statusLabel = '正常庫存';
+    let statusLabel = t.statusNormal;
     let badgeClass = 'normal';
-    let diagAdvice = '';
-    
-    if (item.status === 'dead') {
-        statusLabel = '疑似呆滯';
-        badgeClass = 'dead';
-        diagAdvice = `此品項在庫已達 <b>${item.age} 天</b>，且庫量高達 <b>${item.qty} 個</b>，符合呆滯品警示條件。目前該項目積壓資金高達 <b>$${Math.round(inventoryVal).toLocaleString()} 元</b>，每日正以約 <b>$${dailyCost.toFixed(1)} 元</b> 的速度產生倉儲折舊與利息等損耗成本。建議策略：<br><br>1. <b>清倉促銷</b>：立即安排 6-7 折的出清促銷，或提供量大批發折扣以快速套現。<br>2. <b>跨區調撥</b>：查詢其他區域需求，將存貨轉撥至銷售情況較佳之站點。<br>3. <b>採購凍結</b>：中止此品項的所有進貨與補貨計劃，直到庫存水位降至警戒線以下。`;
-    } else if (item.status === 'slow') {
-        statusLabel = '庫齡偏高';
-        badgeClass = 'slow';
-        diagAdvice = `此品項庫齡為 <b>${item.age} 天</b>，在倉庫滯留時間稍長，累積滯留資金達 <b>$${Math.round(inventoryVal).toLocaleString()} 元</b>。建議策略：<br><br>1. <b>組合銷售</b>：與熱銷品項綑綁成禮包進行搭售，提供微幅折扣。<br>2. <b>補貨減量</b>：下調下一個週期的安全庫存指標，適度減緩新訂單的下單頻率。<br>3. <b>檔期推薦</b>：將此品項納入近期的社群推廣或電子郵件行銷主題中。`;
-    } else if (item.status === 'unknown') {
-        statusLabel = '資料缺失';
-        badgeClass = 'slow';
-        diagAdvice = `因缺乏入庫日期資料，無法計算庫存在庫天數。請確認入庫記錄是否正確，並儘速聯繫倉庫人員更正ERP系統數據，以利進行折舊與生命週期分析。`;
-    } else {
-        statusLabel = '正常庫存';
-        badgeClass = 'normal';
-        diagAdvice = `品項在庫僅 <b>${item.age} 天</b>，流動速度與安全水位均在正常範圍內，庫存狀態良好。目前積壓資金 <b>$${Math.round(inventoryVal).toLocaleString()} 元</b>。建議策略：<br><br>1. <b>常態維護</b>：維持既有的供應商進貨頻率與日常銷貨流程。<br>2. <b>自動化設定</b>：可直接設定自動補貨（Reorder Point），降低管理工時。`;
-    }
+    if (item.status === 'dead') { statusLabel = t.statusDead; badgeClass = 'dead'; }
+    else if (item.status === 'slow') { statusLabel = t.statusSlow; badgeClass = 'slow'; }
+
+    const diagAdvice = item.status === 'dead' ? t.advice(1) : (item.status === 'slow' ? t.advice(1) : t.statusNormal);
     
     content.innerHTML = `
         <div class="diag-item">
-            <div class="diag-title">品項名稱</div>
+            <div class="diag-title">${t.thItem}</div>
             <div class="diag-val" style="color:var(--accent-orange); font-size:1.2rem; font-weight: 700;">${item.item}</div>
         </div>
         <div class="diag-item">
-            <div class="diag-title">在庫狀態</div>
-            <span class="status-badge ${badgeClass}" onclick="event.stopPropagation(); filterByStatus('${item.status}')">${statusLabel}</span>
+            <div class="diag-title">Status</div>
+            <span class="status-badge ${badgeClass}">${statusLabel}</span>
         </div>
         <div class="diag-item">
-            <div class="diag-title">庫存詳細規格</div>
+            <div class="diag-title">Details</div>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.6rem; margin-top:0.3rem; font-size:0.88rem; color:#e5e7eb;">
-                <div>區域：<b>${item.area}</b></div>
-                <div>入庫日期：<b>${item.date}</b></div>
-                <div>在庫時間：<b>${item.age} 天</b></div>
-                <div>庫存數量：<b>${item.qty.toLocaleString()} 個</b></div>
-                <div>品項單價：<b>$${item.price.toLocaleString()} 元</b></div>
-                <div>庫存總價值：<b>$${Math.round(inventoryVal).toLocaleString()} 元</b></div>
+                <div>${t.thArea}：<b>${item.area}</b></div>
+                <div>${t.thDate}：<b>${item.date}</b></div>
+                <div>${t.thAge}：<b>${item.age}</b></div>
+                <div>${t.thQty}：<b>${item.qty.toLocaleString()}</b></div>
+                <div>${t.thPrice}：<b>$${item.price.toLocaleString()}</b></div>
+                <div>Total Value：<b>$${Math.round(inventoryVal).toLocaleString()}</b></div>
             </div>
         </div>
         <div class="diag-item">
-            <div class="diag-title">持有成本損耗估算</div>
-            <div class="diag-val diag-cost">$${Math.round(holdingCost).toLocaleString()} 元</div>
+            <div class="diag-title">Holding Cost Est.</div>
+            <div class="diag-val diag-cost">$${Math.round(holdingCost).toLocaleString()}</div>
             <div style="font-size:0.75rem; color:var(--text-muted); margin-top:6px; line-height:1.4;">
-                * 以產業平均年持有成本率 24% 估算，包含倉儲租金、折舊損耗、保險及資金機會成本，每日損耗約為 <b>$${dailyCost.toFixed(1)} 元</b>。
+                Daily Loss: <b>$${dailyCost.toFixed(1)}</b>
             </div>
         </div>
         <div class="diag-advice-box">
             <div style="font-weight:bold; margin-bottom:8px; display:flex; align-items:center; gap:6px; color:#fca5a5;">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 22 22 22"></polygon><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                AI 處置對策建議
+                AI Advice
             </div>
             <div>${diagAdvice}</div>
         </div>
@@ -1335,175 +2441,6 @@ function showDiagnosis(index) {
 // 關閉側邊欄
 function closeDrawer() {
     document.getElementById("drawer").classList.remove("open");
-}
-
-
-// 9-1. CSV 匯入 / 新增 / 編輯 / 刪除功能，並保留 KPI、篩選、排序、圖表、側邊診斷互動
-function normalizeRecord(obj){
-    const rec = {...obj};
-    if(rec["品項"] === undefined) rec["品項"] = obj.item ?? "";
-    if(rec["入庫日期"] === undefined) rec["入庫日期"] = obj.date ?? "";
-    if(rec["庫存量"] === undefined) rec["庫存量"] = obj.qty ?? "";
-    if(rec["單價"] === undefined) rec["單價"] = obj.price ?? "";
-    if(rec["區域"] === undefined) rec["區域"] = obj.area ?? "";
-    if(rec["庫存狀態"] === undefined) rec["庫存狀態"] = "";
-    if(rec["處置建議"] === undefined) rec["處置建議"] = "";
-    return rec;
-}
-
-function parseCSVText(text){
-    text = text.replace(/^\uFEFF/, '').trim();
-    const rows = [];
-    let row = [], cell = '', inQuotes = false;
-    for(let i=0;i<text.length;i++){
-        const ch = text[i], next = text[i+1];
-        if(ch === '"'){
-            if(inQuotes && next === '"'){ cell += '"'; i++; }
-            else inQuotes = !inQuotes;
-        } else if(ch === ',' && !inQuotes){
-            row.push(cell); cell = '';
-        } else if((ch === '\n' || ch === '\r') && !inQuotes){
-            if(ch === '\r' && next === '\n') i++;
-            row.push(cell); cell = '';
-            if(row.some(v => String(v).trim() !== '')) rows.push(row);
-            row = [];
-        } else cell += ch;
-    }
-    row.push(cell);
-    if(row.some(v => String(v).trim() !== '')) rows.push(row);
-    if(rows.length < 2) return [];
-    const headers = rows[0].map(h => String(h).trim());
-    return rows.slice(1).map(r => {
-        const obj = {};
-        headers.forEach((h,i)=>obj[h]=r[i] ?? '');
-        return normalizeRecord(obj);
-    }).filter(x => Object.values(x).some(v => String(v ?? '').trim() !== ''));
-}
-
-function handleCSVImport(event){
-    const file = event.target.files && event.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e){
-        const imported = parseCSVText(e.target.result || '');
-        if(imported.length === 0){ alert('CSV 沒有讀到資料，請確認欄位有：品項、入庫日期、庫存量、單價、區域'); return; }
-        const mode = confirm(`已讀到 ${imported.length} 筆資料。\n\n按「確定」= 覆蓋目前資料\n按「取消」= 追加到目前資料`);
-        rawData = mode ? imported : rawData.concat(imported);
-        saveInventoryData();
-        refreshAll();
-        alert('匯入完成');
-    };
-    reader.readAsText(file, 'utf-8');
-    event.target.value = '';
-}
-
-let editingRawIndex = null;
-
-function getAllRecordKeys(record){
-    const base = ["品項","入庫日期","庫存量","單價","區域","庫存狀態","處置建議"];
-    const extra = Object.keys(record || {}).filter(k => !base.includes(k));
-    return base.concat(extra);
-}
-
-function escapeHtml(s){
-    return String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-}
-
-function openRecordModal(rawIndex=null){
-    editingRawIndex = rawIndex;
-    const old = rawIndex === null ? normalizeRecord({}) : normalizeRecord(rawData[rawIndex] || {});
-    document.getElementById('record-modal-title').innerText = rawIndex === null ? '新增資料' : '編輯資料';
-    const body = document.getElementById('record-modal-body');
-    const keys = getAllRecordKeys(old);
-    body.innerHTML = keys.map(k => {
-        const value = old[k] ?? '';
-        if(k === '庫存狀態'){
-            const status = normalizeStatus(value);
-            return `<div class="record-field"><label>${k}</label><select data-key="${escapeHtml(k)}">
-                <option value="" ${!status?'selected':''}>自動判斷</option>
-                <option value="normal" ${status==='normal'?'selected':''}>正常庫存</option>
-                <option value="slow" ${status==='slow'?'selected':''}>庫齡偏高</option>
-                <option value="dead" ${status==='dead'?'selected':''}>疑似呆滯品</option>
-                <option value="unknown" ${status==='unknown'?'selected':''}>資料缺失</option>
-            </select></div>`;
-        }
-        const full = ['品項','處置建議'].includes(k) ? ' full' : '';
-        if(k === '處置建議') return `<div class="record-field${full}"><label>${k}</label><textarea data-key="${escapeHtml(k)}">${escapeHtml(value)}</textarea></div>`;
-        return `<div class="record-field${full}"><label>${k}</label><input data-key="${escapeHtml(k)}" value="${escapeHtml(value)}"></div>`;
-    }).join('');
-    document.getElementById('record-modal-backdrop').classList.add('open');
-}
-
-function closeRecordModal(){
-    document.getElementById('record-modal-backdrop').classList.remove('open');
-    editingRawIndex = null;
-}
-
-function saveRecordModal(){
-    const body = document.getElementById('record-modal-body');
-    const inputs = body.querySelectorAll('[data-key]');
-    const rec = {};
-    inputs.forEach(el => rec[el.dataset.key] = el.value);
-    if(!Object.values(rec).some(v => String(v ?? '').trim() !== '')){
-        alert('至少要填一個欄位');
-        return;
-    }
-    if(editingRawIndex === null){
-        rawData.push(normalizeRecord(rec));
-    }else{
-        rawData[editingRawIndex] = normalizeRecord(rec);
-    }
-    saveInventoryData();
-    closeRecordModal();
-    refreshAll();
-}
-
-function addRecord(){
-    openRecordModal(null);
-}
-
-function editRecord(rawIndex){
-    if(!rawData[rawIndex]) return;
-    openRecordModal(rawIndex);
-}
-
-function deleteRecord(rawIndex){
-    const old = rawData[rawIndex];
-    if(!old) return;
-    if(!confirm(`確定刪除「${old["品項"] || '未命名品項'}」這筆資料？`)) return;
-    rawData.splice(rawIndex,1);
-    saveInventoryData();
-    refreshAll();
-}
-
-function clearAllData(){
-    if(!confirm('確定要清空目前所有資料？')) return;
-    rawData = [];
-    saveInventoryData();
-    refreshAll();
-}
-
-function restoreDefaultData(){
-    if(!confirm('確定還原成最初內建的 SCM-005.csv 資料？目前修改會被覆蓋。')) return;
-    rawData = JSON.parse(JSON.stringify(defaultRawData));
-    saveInventoryData();
-    refreshAll();
-}
-
-function downloadCurrentData(){
-    if(rawData.length === 0){ alert('目前沒有資料可下載'); return; }
-    let csv = '\uFEFF品項,入庫日期,庫存量,單價,區域\n';
-    rawData.forEach(r => {
-        csv += [r["品項"], r["入庫日期"], r["庫存量"], r["單價"], r["區域"]]
-            .map(v => `"${String(v ?? '').replace(/"/g,'""')}"`).join(',') + '\n';
-    });
-    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `SCM-005_目前資料_${new Date().toISOString().slice(0,10)}.csv`;
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    URL.revokeObjectURL(url);
 }
 
 // 10. 匯出 CSV 報表功能 (Excel 中文相容編碼 UTF-8 with BOM)
@@ -1563,186 +2500,380 @@ function exportCSV() {
     document.body.removeChild(link);
 }
 
-// 11. ECharts 圖表初始與配置更新
+// 11. ECharts 圖表初始與配置更新（修正版：ECharts 失敗時自動改用內建 SVG 圖表）
 let barChart = null;
 let pieChart = null;
 
+function safeText(s){
+    return String(s ?? '').replace(/[&<>"']/g, c => ({
+        '&':'&amp;',
+        '<':'&lt;',
+        '>':'&gt;',
+        '"':'&quot;',
+        "'":'&#39;'
+    }[c]));
+}
+
+function setChartLoadingText(){
+    const barEl = document.getElementById('bar-chart');
+    const pieEl = document.getElementById('pie-chart');
+    if(barEl) barEl.innerHTML = '<div style="color:#9ca3af;text-align:center;padding-top:120px;">圖表載入中...</div>';
+    if(pieEl) pieEl.innerHTML = '<div style="color:#9ca3af;text-align:center;padding-top:120px;">圖表載入中...</div>';
+}
+
 function initCharts() {
-    // 手機 / ChatGPT 預覽 / 離線環境可能會擋 CDN，這裡改成安全啟動。
+    const barEl = document.getElementById('bar-chart');
+    const pieEl = document.getElementById('pie-chart');
+
+    if(!barEl || !pieEl) return;
+    setChartLoadingText();
+
+    // CDN 沒載到時，不讓中間區塊空白，改用內建圖表。
     if (typeof echarts === 'undefined') {
         barChart = null;
         pieChart = null;
         return;
     }
 
-    barChart = echarts.init(document.getElementById('bar-chart'), 'dark');
-    pieChart = echarts.init(document.getElementById('pie-chart'), 'dark');
-    
-    pieChart.on('click', function(params) {
-        if(params.name) {
-            document.getElementById("area").value = params.name;
-            currentPage = 1;
-            render();
-        }
-    });
+    try {
+        if (barChart) barChart.dispose();
+        if (pieChart) pieChart.dispose();
 
-    barChart.on('click', function(params) {
-        if(params.name) {
-            document.getElementById("keyword").value = params.name;
-            currentPage = 1;
-            render();
-        }
-    });
-    
-    window.addEventListener('resize', () => {
-        if (barChart) barChart.resize();
-        if (pieChart) pieChart.resize();
-    });
+        barChart = echarts.init(barEl, 'dark');
+        pieChart = echarts.init(pieEl, 'dark');
+
+        pieChart.on('click', function(params) {
+            if(params.name) {
+                document.getElementById("area").value = params.name;
+                currentPage = 1;
+                render();
+            }
+        });
+
+        barChart.on('click', function(params) {
+            if(params.name) {
+                document.getElementById("keyword").value = params.name;
+                currentPage = 1;
+                render();
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            setTimeout(() => {
+                if (barChart) barChart.resize();
+                if (pieChart) pieChart.resize();
+            }, 80);
+        });
+    } catch (err) {
+        console.warn('ECharts 初始化失敗，改用內建圖表：', err);
+        barChart = null;
+        pieChart = null;
+    }
 }
 
 function updateCharts(rows){
-    // 沒有載入 ECharts 時，使用內建 HTML 圖表，避免手機打開變成 0 筆。
-    if(!barChart || !pieChart) {
-        renderFallbackCharts(rows);
+    const barEl = document.getElementById('bar-chart');
+    const pieEl = document.getElementById('pie-chart');
+    if(!barEl || !pieEl) return;
+
+    rows = Array.isArray(rows) ? rows : [];
+    const validRows = rows.filter(x => x && !isNaN(Number(x.qty)));
+
+    // 沒有資料時清楚顯示，不要讓圖表區空白。
+    if(validRows.length === 0){
+        barEl.innerHTML = '<div style="color:#9ca3af;text-align:center;padding-top:120px;">目前沒有符合條件的資料</div>';
+        pieEl.innerHTML = '<div style="color:#9ca3af;text-align:center;padding-top:120px;">目前沒有符合條件的資料</div>';
         return;
     }
 
-    // A. 條形圖 (Bar Chart) - Top 8 庫存量
-    const itemGroup = {};
-    rows.forEach(x => itemGroup[x.item] = (itemGroup[x.item] || 0) + x.qty);
-    const topItems = Object.entries(itemGroup)
-        .sort((a,b)=>b[1]-a[1])
-        .slice(0,8)
-        .reverse();
+    if(!barChart || !pieChart || typeof echarts === 'undefined') {
+        renderFallbackCharts(validRows);
+        return;
+    }
 
-    const barYAxis = topItems.map(x => x[0]);
-    const barData = topItems.map(x => x[1]);
+    try {
+        // A. 長條圖：Top 8 品項庫存量
+        const itemGroup = {};
+        validRows.forEach(x => {
+            const item = x.item && String(x.item).trim() ? String(x.item).trim() : '未命名品項';
+            itemGroup[item] = (itemGroup[item] || 0) + Number(x.qty || 0);
+        });
 
-    const barOption = {
-        backgroundColor: 'transparent',
-        tooltip: { 
-            trigger: 'axis', 
-            axisPointer: { type: 'shadow' },
-            backgroundColor: '#111827',
-            borderColor: 'rgba(255,255,255,0.1)',
-            textStyle: { color: '#fff' },
-            formatter: function(params) {
-                return params[0].name + '<br/>庫存量 : ' + params[0].value.toLocaleString() + ' 個';
-            }
-        },
-        grid: { left: '4%', right: '12%', bottom: '5%', top: '5%', containLabel: true },
-        xAxis: { 
-            type: 'value', 
-            name: '個',
-            nameTextStyle: { color: '#9ca3af', fontSize: 10 },
-            splitLine: { lineStyle: { color: 'rgba(255,255,255,0.05)', type: 'dashed' } },
-            axisLabel: { color: '#9ca3af' }
-        },
-        yAxis: { 
-            type: 'category', 
-            data: barYAxis, 
-            axisLabel: { color: '#f3f4f6', fontSize: 11 },
-            axisLine: { lineStyle: { color: 'rgba(255,255,255,0.1)' } }
-        },
-        series: [{
-            type: 'bar',
-            data: barData,
-            itemStyle: { 
-                color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-                    { offset: 0, color: '#f35c27' },
-                    { offset: 1, color: '#f97316' }
-                ]),
-                borderRadius: [0, 4, 4, 0] 
-            },
-            label: { 
-                show: true, 
-                position: 'right', 
-                color: '#fff', 
-                fontSize: 11,
+        const topItems = Object.entries(itemGroup)
+            .sort((a,b)=>b[1]-a[1])
+            .slice(0,8)
+            .reverse();
+
+        const barYAxis = topItems.map(x => x[0]);
+        const barData = topItems.map(x => Math.round(x[1]));
+
+        const barOption = {
+            backgroundColor: 'transparent',
+            animationDuration: 500,
+            tooltip: { 
+                trigger: 'axis', 
+                axisPointer: { type: 'shadow' },
+                backgroundColor: '#111827',
+                borderColor: 'rgba(255,255,255,0.1)',
+                textStyle: { color: '#fff' },
                 formatter: function(params) {
-                    return params.value.toLocaleString() + ' 個';
+                    return params[0].name + '<br/>庫存量：' + Number(params[0].value).toLocaleString() + ' 個';
                 }
-            }
-        }]
-    };
-    barChart.setOption(barOption);
-
-    // B. 圓餅圖 (Pie Chart) - 區域庫存分佈
-    const areaGroup = {};
-    rows.forEach(x => areaGroup[x.area] = (areaGroup[x.area] || 0) + x.qty);
-    const pieData = Object.entries(areaGroup).map(([name, value]) => ({ name, value }));
-
-    const pieOption = {
-        backgroundColor: 'transparent',
-        tooltip: { 
-            trigger: 'item', 
-            formatter: '{a} <br/>{b} : {c} 個 ({d}%)',
-            backgroundColor: '#111827',
-            borderColor: 'rgba(255,255,255,0.1)',
-            textStyle: { color: '#fff' }
-        },
-        legend: { 
-            bottom: '0', 
-            left: 'center', 
-            itemWidth: 10, 
-            itemHeight: 10,
-            textStyle: { color: '#9ca3af' }
-        },
-        series: [{
-            name: '庫存分佈',
-            type: 'pie',
-            radius: ['45%', '70%'],
-            avoidLabelOverlap: false,
-            itemStyle: { borderRadius: 8, borderColor: '#111829', borderWidth: 2 },
-            label: { show: false, position: 'center' },
-            emphasis: {
-                label: { show: true, fontSize: 14, fontWeight: 'bold', color: '#fff' }
             },
-            labelLine: { show: false },
-            data: pieData,
-            color: ['#f35c27', '#f97316', '#fb923c', '#fdba74', '#fed7aa', '#4b5563', '#9ca3af']
-        }]
-    };
-    pieChart.setOption(pieOption);
-}
+            grid: { left: 90, right: 70, bottom: 25, top: 15, containLabel: true },
+            xAxis: { 
+                type: 'value',
+                splitLine: { lineStyle: { color: 'rgba(255,255,255,0.06)', type: 'dashed' } },
+                axisLabel: { color: '#9ca3af' }
+            },
+            yAxis: { 
+                type: 'category', 
+                data: barYAxis, 
+                axisLabel: { color: '#f3f4f6', fontSize: 11 },
+                axisLine: { lineStyle: { color: 'rgba(255,255,255,0.12)' } },
+                axisTick: { show: false }
+            },
+            series: [{
+                name: '庫存量',
+                type: 'bar',
+                data: barData,
+                barWidth: 18,
+                itemStyle: { 
+                    color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                        { offset: 0, color: '#f35c27' },
+                        { offset: 1, color: '#f97316' }
+                    ]),
+                    borderRadius: [0, 8, 8, 0] 
+                },
+                label: { 
+                    show: true, 
+                    position: 'right', 
+                    color: '#fff', 
+                    fontSize: 11,
+                    formatter: function(params) {
+                        return Number(params.value).toLocaleString();
+                    }
+                }
+            }]
+        };
+        barChart.setOption(barOption, true);
 
+        // B. 圓餅圖：區域庫存分佈
+        const areaGroup = {};
+        validRows.forEach(x => {
+            const area = x.area && String(x.area).trim() ? String(x.area).trim() : '未填區域';
+            areaGroup[area] = (areaGroup[area] || 0) + Number(x.qty || 0);
+        });
+
+        const pieData = Object.entries(areaGroup)
+            .sort((a,b)=>b[1]-a[1])
+            .map(([name, value]) => ({ name, value: Math.round(value) }));
+
+        const pieOption = {
+            backgroundColor: 'transparent',
+            animationDuration: 500,
+            tooltip: { 
+                trigger: 'item', 
+                formatter: '{b}<br/>庫存量：{c} 個 ({d}%)',
+                backgroundColor: '#111827',
+                borderColor: 'rgba(255,255,255,0.1)',
+                textStyle: { color: '#fff' }
+            },
+            legend: { 
+                bottom: 0, 
+                left: 'center', 
+                itemWidth: 10, 
+                itemHeight: 10,
+                textStyle: { color: '#9ca3af' }
+            },
+            series: [{
+                name: '庫存分佈',
+                type: 'pie',
+                radius: ['42%', '68%'],
+                center: ['50%', '43%'],
+                avoidLabelOverlap: true,
+                itemStyle: { borderRadius: 8, borderColor: '#111829', borderWidth: 2 },
+                label: { show: false },
+                emphasis: {
+                    label: { show: true, fontSize: 14, fontWeight: 'bold', color: '#fff' }
+                },
+                labelLine: { show: false },
+                data: pieData,
+                color: ['#f35c27', '#f97316', '#fb923c', '#fdba74', '#fed7aa', '#22d3ee', '#64748b']
+            }]
+        };
+        pieChart.setOption(pieOption, true);
+
+        setTimeout(() => {
+            if(barChart) barChart.resize();
+            if(pieChart) pieChart.resize();
+        }, 60);
+    } catch (err) {
+        console.warn('ECharts 繪製失敗，改用內建圖表：', err);
+        barChart = null;
+        pieChart = null;
+        renderFallbackCharts(validRows);
+    }
+}
 
 function renderFallbackCharts(rows){
     const barEl = document.getElementById('bar-chart');
     const pieEl = document.getElementById('pie-chart');
+    if(!barEl || !pieEl) return;
+
+    rows = Array.isArray(rows) ? rows : [];
 
     const itemGroup = {};
-    rows.forEach(x => itemGroup[x.item] = (itemGroup[x.item] || 0) + x.qty);
-    const topItems = Object.entries(itemGroup).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    rows.forEach(x => {
+        const item = x.item && String(x.item).trim() ? String(x.item).trim() : '未命名品項';
+        itemGroup[item] = (itemGroup[item] || 0) + Number(x.qty || 0);
+    });
+
+    const topItems = Object.entries(itemGroup)
+        .sort((a,b)=>b[1]-a[1])
+        .slice(0,8);
+
     const maxVal = Math.max(...topItems.map(x=>x[1]), 1);
 
-    barEl.innerHTML = topItems.map(([name,value]) => `
-        <div onclick="document.getElementById('keyword').value='${String(name).replace(/'/g, "\'")}'; currentPage=1; render();" style="display:grid;grid-template-columns:120px 1fr 70px;gap:10px;align-items:center;margin:12px 0;cursor:pointer;">
-            <div style="font-size:12px;color:#f3f4f6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${name}</div>
-            <div style="height:18px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;">
-                <div style="height:100%;width:${Math.max(3, value/maxVal*100)}%;background:linear-gradient(90deg,#f35c27,#f97316);border-radius:999px;"></div>
-            </div>
-            <div style="font-size:12px;color:#fff;text-align:right;">${value.toLocaleString()}</div>
+    barEl.innerHTML = `
+        <div style="height:100%;display:flex;flex-direction:column;justify-content:center;padding:8px 4px;">
+            ${topItems.map(([name,value]) => `
+                <div data-item="${safeText(name)}" class="fallback-bar-row" style="display:grid;grid-template-columns:120px 1fr 74px;gap:10px;align-items:center;margin:8px 0;cursor:pointer;">
+                    <div style="font-size:12px;color:#f3f4f6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${safeText(name)}</div>
+                    <div style="height:18px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden;">
+                        <div style="height:100%;width:${Math.max(3, value/maxVal*100)}%;background:linear-gradient(90deg,#f35c27,#f97316);border-radius:999px;"></div>
+                    </div>
+                    <div style="font-size:12px;color:#fff;text-align:right;">${Math.round(value).toLocaleString()}</div>
+                </div>
+            `).join('') || '<div style="color:#9ca3af;text-align:center;padding-top:80px;">沒有資料</div>'}
         </div>
-    `).join('') || '<div style="color:#9ca3af;text-align:center;padding-top:80px;">沒有資料</div>';
+    `;
+
+    barEl.querySelectorAll('.fallback-bar-row').forEach(el => {
+        el.addEventListener('click', () => {
+            document.getElementById('keyword').value = el.dataset.item || '';
+            currentPage = 1;
+            render();
+        });
+    });
 
     const areaGroup = {};
-    rows.forEach(x => areaGroup[x.area] = (areaGroup[x.area] || 0) + x.qty);
+    rows.forEach(x => {
+        const area = x.area && String(x.area).trim() ? String(x.area).trim() : '未填區域';
+        areaGroup[area] = (areaGroup[area] || 0) + Number(x.qty || 0);
+    });
+
     const areas = Object.entries(areaGroup).sort((a,b)=>b[1]-a[1]);
     const total = areas.reduce((s,x)=>s+x[1],0) || 1;
-    pieEl.innerHTML = areas.map(([name,value]) => `
-        <div onclick="document.getElementById('area').value='${String(name).replace(/'/g, "\'")}'; currentPage=1; render();" style="display:flex;justify-content:space-between;align-items:center;margin:12px 0;padding:10px;border:1px solid rgba(255,255,255,.06);border-radius:10px;cursor:pointer;">
-            <span style="color:#f3f4f6;">${name}</span>
-            <span style="color:#f97316;font-weight:700;">${value.toLocaleString()} 個｜${Math.round(value/total*100)}%</span>
+    const colors = ['#f35c27','#f97316','#fb923c','#fdba74','#fed7aa','#22d3ee','#64748b'];
+
+    let startAngle = -90;
+    const cx = 105, cy = 105, r = 78, innerR = 46;
+
+    function polarToCartesian(angle, radius){
+        const rad = (angle - 90) * Math.PI / 180;
+        return { x: cx + radius * Math.cos(rad), y: cy + radius * Math.sin(rad) };
+    }
+
+    function donutSlice(start, end, outerRadius, innerRadius){
+        const largeArc = end - start > 180 ? 1 : 0;
+        const p1 = polarToCartesian(start, outerRadius);
+        const p2 = polarToCartesian(end, outerRadius);
+        const p3 = polarToCartesian(end, innerRadius);
+        const p4 = polarToCartesian(start, innerRadius);
+        return [
+            `M ${p1.x} ${p1.y}`,
+            `A ${outerRadius} ${outerRadius} 0 ${largeArc} 1 ${p2.x} ${p2.y}`,
+            `L ${p3.x} ${p3.y}`,
+            `A ${innerRadius} ${innerRadius} 0 ${largeArc} 0 ${p4.x} ${p4.y}`,
+            'Z'
+        ].join(' ');
+    }
+
+    const slices = areas.map(([name,value], idx) => {
+        const angle = value / total * 360;
+        const path = donutSlice(startAngle, startAngle + angle, r, innerR);
+        startAngle += angle;
+        return `<path data-area="${safeText(name)}" d="${path}" fill="${colors[idx % colors.length]}" opacity="0.95" style="cursor:pointer"></path>`;
+    }).join('');
+
+    pieEl.innerHTML = `
+        <div style="height:100%;display:grid;grid-template-columns:220px 1fr;align-items:center;gap:10px;">
+            <svg viewBox="0 0 210 210" width="210" height="210" style="display:block;margin:auto;">
+                ${slices || `<circle cx="${cx}" cy="${cy}" r="${r}" fill="rgba(255,255,255,.08)"></circle>`}
+                <circle cx="${cx}" cy="${cy}" r="${innerR-2}" fill="#111928"></circle>
+                <text x="${cx}" y="${cy-4}" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">${Math.round(total).toLocaleString()}</text>
+                <text x="${cx}" y="${cy+18}" text-anchor="middle" fill="#9ca3af" font-size="12">總庫存</text>
+            </svg>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+                ${areas.map(([name,value], idx) => `
+                    <div data-area="${safeText(name)}" class="fallback-pie-row" style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px;border:1px solid rgba(255,255,255,.07);border-radius:10px;cursor:pointer;">
+                        <span style="display:flex;align-items:center;gap:7px;color:#f3f4f6;font-size:12px;">
+                            <i style="width:9px;height:9px;border-radius:50%;background:${colors[idx % colors.length]};display:inline-block;"></i>
+                            ${safeText(name)}
+                        </span>
+                        <b style="color:#f97316;font-size:12px;">${Math.round(value/total*100)}%</b>
+                    </div>
+                `).join('') || '<div style="color:#9ca3af;text-align:center;">沒有資料</div>'}
+            </div>
         </div>
-    `).join('') || '<div style="color:#9ca3af;text-align:center;padding-top:80px;">沒有資料</div>';
+    `;
+
+    pieEl.querySelectorAll('[data-area]').forEach(el => {
+        el.addEventListener('click', () => {
+            document.getElementById('area').value = el.dataset.area || '';
+            currentPage = 1;
+            render();
+        });
+    });
+}
+
+
+function renderPagination(totalPages){
+    const bar = document.getElementById('pagination-bar');
+    if(!bar) return;
+    totalPages = Math.max(1, Number(totalPages) || 1);
+    if(currentPage > totalPages) currentPage = totalPages;
+    if(currentPage < 1) currentPage = 1;
+
+    const makeBtn = (label, page, disabled=false, active=false) => {
+        const cls = `page-link${disabled ? ' disabled' : ''}${active ? ' active' : ''}`;
+        const click = disabled || active ? '' : ` onclick="goToPage(${page})"`;
+        return `<span class="${cls}"${click}>${label}</span>`;
+    };
+
+    let html = '';
+    html += makeBtn('上一頁', currentPage - 1, currentPage <= 1);
+
+    const pages = [];
+    const start = Math.max(1, currentPage - 2);
+    const end = Math.min(totalPages, currentPage + 2);
+    if(start > 1) pages.push(1);
+    if(start > 2) pages.push('...');
+    for(let i=start; i<=end; i++) pages.push(i);
+    if(end < totalPages - 1) pages.push('...');
+    if(end < totalPages) pages.push(totalPages);
+
+    pages.forEach(p => {
+        if(p === '...') html += `<span class="page-info">...</span>`;
+        else html += makeBtn(p, p, false, p === currentPage);
+    });
+
+    html += makeBtn('下一頁', currentPage + 1, currentPage >= totalPages);
+    html += `<span class="page-info">第 ${currentPage} / ${totalPages} 頁</span>`;
+    bar.innerHTML = html;
+}
+
+function goToPage(page){
+    const totalPages = Math.ceil((currentRows || []).length / rowsPerPage) || 1;
+    currentPage = Math.min(Math.max(1, Number(page) || 1), totalPages);
+    render();
 }
 
 function resetAll(){
     document.getElementById("keyword").value="";
     document.getElementById("area").value="";
     document.getElementById("status").value="";
-    document.getElementById("advice").value="";
     currentSortColumn = null;
     currentSortOrder = 'desc';
     currentPage = 1;
@@ -1750,11 +2881,399 @@ function resetAll(){
     render();
 }
 
-// 頁面初次加載
-rebuildData();
-initArea();
-initCharts();
-render();
+</script>
+
+<script>
+// --- AI Assistant & Localization Logic ---
+let currentLang = 'zh-TW';
+const translations = {
+    'zh-TW': {
+        dashTitle: "庫齡與呆滯品分析面板",
+        dashDesc: "即時監控庫存流動率、庫存分配及物流呆滯品預警報告",
+        lastUpdate: "最後更新時間",
+        searchPlaceholder: "🔍 輸入品項名稱即時搜尋...",
+        allArea: "全部區域",
+        allStatus: "全部庫存狀態",
+        statusNormal: "正常庫存",
+        statusSlow: "庫齡偏高",
+        statusDead: "疑似呆滯品",
+        btnReset: "重設",
+        btnExport: "匯出報表",
+        metricTotal: "總分析品項",
+        metricNormal: "正常庫存品項",
+        metricSlow: "庫齡偏高品項",
+        metricDead: "疑似呆滯品項",
+        metricVal: "篩選滯留資金總額",
+        subTotal: (qty) => `總庫存量: ${qty.toLocaleString()} 個`,
+        subNormal: (qty) => `數量: ${qty.toLocaleString()} 個`,
+        subSlow: (age) => `最大庫齡: ${age} 天`,
+        subDead: (val) => `資金積壓: $${Math.round(val).toLocaleString()}`,
+        subVal: (avg) => `品項均價: $${Math.round(avg).toLocaleString()}`,
+        chartBarTitle: "品項庫存量分佈排行 (Top 8)",
+        chartBarUnit: "單位：個 (點擊長條可快速搜尋品項)",
+        chartPieTitle: "各區域庫存量佔比圓餅圖",
+        chartPieUnit: "單位：個 (點擊扇區可快速篩選區域)",
+        tableTitle: "庫存呆滯品分析明細",
+        tableTip: "💡 點擊欄位標頭可進行排序，點擊列表行可展開 AI 診斷，點擊標籤可按狀態快速篩選",
+        thItem: "品項",
+        thDate: "入庫日期",
+        thAge: "庫齡天數",
+        thQty: "庫存量",
+        thPrice: "單價",
+        thArea: "區域",
+        thStatus: "庫存狀態與建議",
+        welcome: "您好！我是 SCM 智能助手。您可以問我關於庫存數據、呆滯品分析或建議處置對策。",
+        suggestions: ["有哪些高風險呆滯品？", "目前庫存量最高的區域？", "如何優化資金周轉？"],
+        placeholder: "輸入您的問題...",
+        send: "發送",
+        thinking: "思考中...",
+        noDeadItems: "目前系統中沒有發現疑似呆滯品，庫存狀態健康。",
+        deadItemsFound: (count, value) => `發現 <b>${count}</b> 項疑似呆滯品，總資金積壓達 <b>$${Math.round(value).toLocaleString()}</b>。`,
+        topDeadHeader: "前三大風險品項：",
+        deadAdvice: "建議立即安排促銷或跨區調撥。",
+        topArea: (area, qty) => `根據目前數據，<b>${area}</b> 的庫存量最高，總計 <b>${qty.toLocaleString()}</b> 個。建議檢查該區域的倉儲壓力，並評估是否需要進行需求預測修正。`,
+        advice: (deadCount) => `針對目前的庫存現況，我有以下三點建議：<br><br>1. <b>加速套現</b>：針對 ${deadCount} 項呆滯品進行 7 折出清。<br>2. <b>精準採購</b>：庫齡偏高品項較多，應暫緩下單。<br>3. <b>動態調撥</b>：跨區域調度以優化庫存。`,
+        greeting: "您好！我是您的 SCM 數據小助手。我可以幫您分析庫存、找出風險品項，或提供營運建議。請問您想了解什麼？",
+        fallback: (val) => `這是一個很好的問題。根據數據，建議您可以先關注「疑似呆滯品」，因為那裡有約 $${Math.round(val).toLocaleString()} 的資金尚未活化。`
+    },
+    'en': {
+        dashTitle: "Inventory Age & Obsolete Analysis",
+        dashDesc: "Real-time monitoring of turnover, distribution, and dead stock alerts",
+        lastUpdate: "Last Updated",
+        searchPlaceholder: "🔍 Search item name...",
+        allArea: "All Regions",
+        allStatus: "All Status",
+        statusNormal: "Normal",
+        statusSlow: "Slow Moving",
+        statusDead: "Dead Stock",
+        btnReset: "Reset",
+        btnExport: "Export CSV",
+        metricTotal: "Total Items",
+        metricNormal: "Normal Items",
+        metricSlow: "Slow Items",
+        metricDead: "Dead Items",
+        metricVal: "Total Capital Tie-up",
+        subTotal: (qty) => `Total Qty: ${qty.toLocaleString()} units`,
+        subNormal: (qty) => `Qty: ${qty.toLocaleString()} units`,
+        subSlow: (age) => `Max Age: ${age} days`,
+        subDead: (val) => `Capital: $${Math.round(val).toLocaleString()}`,
+        subVal: (avg) => `Avg Price: $${Math.round(avg).toLocaleString()}`,
+        chartBarTitle: "Top 8 Items by Inventory Qty",
+        chartBarUnit: "Units: pcs (Click bar to search)",
+        chartPieTitle: "Inventory Distribution by Region",
+        chartPieUnit: "Units: pcs (Click slice to filter)",
+        tableTitle: "Inventory Analysis Details",
+        tableTip: "💡 Click headers to sort, rows for AI diagnosis, badges to filter status",
+        thItem: "Item",
+        thDate: "Inbound Date",
+        thAge: "Age (Days)",
+        thQty: "Qty",
+        thPrice: "Price",
+        thArea: "Region",
+        thStatus: "Status & Advice",
+        welcome: "Hello! I am your SCM Assistant. Ask me about inventory data, dead stock analysis, or optimization strategies.",
+        suggestions: ["High-risk items?", "Top inventory region?", "Optimization tips?"],
+        placeholder: "Type your question...",
+        send: "Send",
+        thinking: "Thinking...",
+        noDeadItems: "No dead stock found. Your inventory status is healthy.",
+        deadItemsFound: (count, value) => `Found <b>${count}</b> potential dead items, with total capital tie-up of <b>$${Math.round(value).toLocaleString()}</b>.`,
+        topDeadHeader: "Top 3 risk items:",
+        deadAdvice: "Recommendation: Arrange clearance sales or inter-region transfers immediately.",
+        topArea: (area, qty) => `Based on data, <b>${area}</b> has the highest inventory at <b>${qty.toLocaleString()}</b> units. Consider reviewing warehouse pressure and demand forecasts.`,
+        advice: (deadCount) => `Advice for current inventory:<br><br>1. <b>Liquidate</b>: 30% discount for ${deadCount} dead items.<br>2. <b>Precise Procurement</b>: Pause orders for high-age items.<br>3. <b>Dynamic Transfer</b>: Move excess stock to high-demand areas.`,
+        greeting: "Hello! I'm your SCM Data Assistant. I can help analyze stock, find risks, or provide advice. How can I help?",
+        fallback: (val) => `Good question. Focus on 'Dead Stock' first—about $${Math.round(val).toLocaleString()} is tied up there. How else can I assist?`
+    },
+    'ja': {
+        dashTitle: "在庫齢および滞留在庫分析パネル",
+        dashDesc: "在庫回転率、在庫分配、および物流滞留在庫の警告レポートのリアルタイム監視",
+        lastUpdate: "最終更新時間",
+        searchPlaceholder: "🔍 品目名で検索...",
+        allArea: "全地域",
+        allStatus: "全ステータス",
+        statusNormal: "正常在庫",
+        statusSlow: "在庫齢高",
+        statusDead: "滞留在庫疑い",
+        btnReset: "リセット",
+        btnExport: "レポート出力",
+        metricTotal: "分析総数",
+        metricNormal: "正常品目数",
+        metricSlow: "在庫齢高品目",
+        metricDead: "滞留疑い品目",
+        metricVal: "滞留資金総額",
+        subTotal: (qty) => `総在庫量: ${qty.toLocaleString()} 個`,
+        subNormal: (qty) => `数量: ${qty.toLocaleString()} 個`,
+        subSlow: (age) => `最大在庫齢: ${age} 日`,
+        subDead: (val) => `資金滞留: $${Math.round(val).toLocaleString()}`,
+        subVal: (avg) => `平均単価: $${Math.round(avg).toLocaleString()}`,
+        chartBarTitle: "品目在庫量ランキング (Top 8)",
+        chartBarUnit: "単位：個 (バーをクリックして検索)",
+        chartPieTitle: "地域別在庫割合",
+        chartPieUnit: "単位：個 (セクターをクリックして抽出)",
+        tableTitle: "在庫滞留分析明細",
+        tableTip: "💡 ヘッダーでソート、行クリックでAI診断、バッジで状態フィルタリング",
+        thItem: "品目",
+        thDate: "入庫日",
+        thAge: "在庫齢 (日)",
+        thQty: "在庫量",
+        thPrice: "単価",
+        thArea: "地域",
+        thStatus: "在庫状態と提案",
+        welcome: "こんにちは！SCMスマートアシスタントです。在庫データ、滞留在庫分析、または最適化の提案についてお聞きください。",
+        suggestions: ["高リスク品目は？", "在庫が最も多い地域は？", "最適化のアドバイス"],
+        placeholder: "質問を入力...",
+        send: "送信",
+        thinking: "考え中...",
+        noDeadItems: "現在、滞留在庫は見つかりませんでした。在庫状態は良好です。",
+        deadItemsFound: (count, value) => `<b>${count}</b> 件の滞留在庫が見つかりました。総滞留資金は <b>$${Math.round(value).toLocaleString()}</b> です。`,
+        topDeadHeader: "上位3つのリスク品目：",
+        deadAdvice: "アドバイス：直ちにセールまたは地域間移動を検討してください。",
+        topArea: (area, qty) => `データによると、<b>${area}</b> の在庫が最も多く、合計 <b>${qty.toLocaleString()}</b> 個です。倉庫の負荷と需要予測を確認してください。`,
+        advice: (deadCount) => `在庫状況へのアドバイス：<br><br>1. <b>現金化</b>：${deadCount}件の滞留品を30%オフで処分。<br>2. <b>精密購買</b>：高在庫齢品の発注を停止。<br>3. <b>動的移動</b>：余剰在庫を需要の高い地域へ移動。`,
+        greeting: "こんにちは！SCMデータアシスタントです。在庫分析やリスク特定をお手伝いします。何かお困りですか？",
+        fallback: (val) => `良い質問です。滞留在庫（約 $${Math.round(val).toLocaleString()}）の有効活用を優先的に検討することをお勧めします。`
+    },
+    'ko': {
+        dashTitle: "재고 연령 및 불용 재고 분석 패널",
+        dashDesc: "재고 회전율, 재고 배분 및 물류 불용 재고 경고 보고서의 실시간 모니터링",
+        lastUpdate: "최종 업데이트 시간",
+        searchPlaceholder: "🔍 품목 이름으로 검색...",
+        allArea: "모든 지역",
+        allStatus: "모든 상태",
+        statusNormal: "정상 재고",
+        statusSlow: "재고 연령 높음",
+        statusDead: "불용 재고 의심",
+        btnReset: "초기화",
+        btnExport: "보고서 내보내기",
+        metricTotal: "총 분석 품목",
+        metricNormal: "정상 재고 품목",
+        metricSlow: "고령 재고 품목",
+        metricDead: "불용 의심 품목",
+        metricVal: "총 묶인 자금",
+        subTotal: (qty) => `총 재고량: ${qty.toLocaleString()} 개`,
+        subNormal: (qty) => `수량: ${qty.toLocaleString()} 개`,
+        subSlow: (age) => `최대 재고 연령: ${age} 일`,
+        subDead: (val) => `자금 압박: $${Math.round(val).toLocaleString()}`,
+        subVal: (avg) => `품목 평균가: $${Math.round(avg).toLocaleString()}`,
+        chartBarTitle: "품목별 재고량 순위 (Top 8)",
+        chartBarUnit: "단위: 개 (막대 클릭 시 해당 품목 검색)",
+        chartPieTitle: "지역별 재고 분포 원형 차트",
+        chartPieUnit: "단위: 개 (섹터 클릭 시 해당 지역 필터링)",
+        tableTitle: "재고 불용 분석 상세",
+        tableTip: "💡 헤더 클릭 시 정렬, 행 클릭 시 AI 진단, 배지 클릭 시 상태 필터링",
+        thItem: "품목",
+        thDate: "입고 날짜",
+        thAge: "재고 연령(일)",
+        thQty: "재고량",
+        thPrice: "단가",
+        thArea: "지역",
+        thStatus: "재고 상태 및 제안",
+        welcome: "안녕하세요! SCM 스마트 어시스턴트입니다. 재고 데이터, 불용 재고 분석 또는 최적화 전략에 대해 문의해 주세요.",
+        suggestions: ["고위험 품목은?", "재고가 가장 많은 지역?", "최적화 제안"],
+        placeholder: "질문을 입력하세요...",
+        send: "전송",
+        thinking: "생각 중...",
+        noDeadItems: "현재 불용 재고가 발견되지 않았습니다. 재고 상태가 건강합니다.",
+        deadItemsFound: (count, value) => `<b>${count}</b> 건의 불용 재고가 발견되었습니다. 총 묶인 자금은 <b>$${Math.round(value).toLocaleString()}</b> 입니다.`,
+        topDeadHeader: "상위 3개 위험 품목:",
+        deadAdvice: "권장 사항: 즉시 할인 판매 또는 지역 간 이동을 배치하십시오.",
+        topArea: (area, qty) => `데이터에 따르면 <b>${area}</b> 지역의 재고가 <b>${qty.toLocaleString()}</b>개로 가장 많습니다. 창고 압박 및 수요 예측 수정을 검토하십시오.`,
+        advice: (deadCount) => `재고 최적화 제안:<br><br>1. <b>현금화</b>: ${deadCount}개 불용 재고 30% 할인 판매.<br>2. <b>정밀 구매</b>: 고령 재고 품목 발주 일시 중단.<br>3. <b>동적 배분</b>: 수요가 많은 지역으로 재고 이동.`,
+        greeting: "안녕하세요! SCM 데이터 도우미입니다. 재고 분석 및 리스크 파악을 도와드릴 수 있습니다. 무엇을 도와드릴까요?",
+        fallback: (val) => `좋은 질문입니다. 약 $${Math.round(val).toLocaleString()}의 자금이 묶여 있는 '불용 재고' 지표를 먼저 확인하는 것을 추천합니다.`
+    }
+};
+
+function changeLanguage() {
+    currentLang = document.getElementById('lang-select').value;
+    const t = translations[currentLang];
+    
+    // Update Page UI
+    document.getElementById('dash-title').innerText = t.dashTitle;
+    document.getElementById('dash-desc').innerText = t.dashDesc;
+    document.getElementById('last-update-label').innerText = t.lastUpdate;
+    document.getElementById('keyword').placeholder = t.searchPlaceholder;
+    document.getElementById('opt-all-area').innerText = t.allArea;
+    document.getElementById('opt-all-status').innerText = t.allStatus;
+    document.getElementById('opt-status-normal').innerText = t.statusNormal;
+    document.getElementById('opt-status-slow').innerText = t.statusSlow;
+    document.getElementById('opt-status-dead').innerText = t.statusDead;
+    document.getElementById('btn-reset-text').innerText = t.btnReset;
+    document.getElementById('btn-export-text').innerText = t.btnExport;
+    
+    document.getElementById('metric-total-title').innerText = t.metricTotal;
+    document.getElementById('metric-normal-title').innerText = t.metricNormal;
+    document.getElementById('metric-slow-title').innerText = t.metricSlow;
+    document.getElementById('metric-dead-title').innerText = t.metricDead;
+    document.getElementById('metric-val-title').innerText = t.metricVal;
+    
+    document.getElementById('chart-bar-title').innerText = t.chartBarTitle;
+    document.getElementById('chart-bar-unit').innerText = t.chartBarUnit;
+    document.getElementById('chart-pie-title').innerText = t.chartPieTitle;
+    document.getElementById('chart-pie-unit').innerText = t.chartPieUnit;
+    
+    document.getElementById('table-title').innerText = t.tableTitle;
+    document.getElementById('table-tip').innerText = t.tableTip;
+    document.getElementById('th-item').childNodes[0].textContent = t.thItem + ' ';
+    document.getElementById('th-date').childNodes[0].textContent = t.thDate + ' ';
+    document.getElementById('th-age').childNodes[0].textContent = t.thAge + ' ';
+    document.getElementById('th-qty').childNodes[0].textContent = t.thQty + ' ';
+    document.getElementById('th-price').childNodes[0].textContent = t.thPrice + ' ';
+    document.getElementById('th-area').childNodes[0].textContent = t.thArea + ' ';
+    document.getElementById('th-status').innerText = t.thStatus;
+
+    // Update AI Assistant
+    document.getElementById('welcome-msg').childNodes[0].textContent = t.welcome;
+    document.getElementById('chat-input').placeholder = t.placeholder;
+    document.querySelector('.chat-send:last-child').innerText = t.send;
+    
+    const sugContainer = document.getElementById('suggestions');
+    sugContainer.innerHTML = t.suggestions.map(s => `<div class="suggestion-chip" onclick="askQuestion('${s}')">${s}</div>`).join('');
+    
+    // Re-render dashboard content
+    render();
+}
+
+function changeTheme() {
+    const mode = document.getElementById('theme-select').value;
+    if (mode === 'system') {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.body.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+        // Listen for system changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            if (document.getElementById('theme-select').value === 'system') {
+                document.body.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+            }
+        });
+    } else {
+        document.body.setAttribute('data-theme', mode);
+    }
+}
+
+// Voice Input Integration
+let recognition;
+if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onresult = (event) => {
+        const text = event.results[0][0].transcript;
+        document.getElementById('chat-input').value = text;
+        document.getElementById('voice-btn').style.background = 'rgba(255,255,255,0.1)';
+        sendMessage();
+    };
+
+    recognition.onerror = () => {
+        document.getElementById('voice-btn').style.background = 'rgba(255,255,255,0.1)';
+    };
+    
+    recognition.onend = () => {
+        document.getElementById('voice-btn').style.background = 'rgba(255,255,255,0.1)';
+    };
+}
+
+function toggleVoiceInput() {
+    if (!recognition) {
+        alert("Your browser does not support Speech Recognition.");
+        return;
+    }
+    
+    recognition.lang = currentLang;
+    try {
+        recognition.start();
+        document.getElementById('voice-btn').style.background = 'var(--accent-orange)';
+    } catch (e) {
+        recognition.stop();
+    }
+}
+
+function toggleChat() {
+    const chat = document.getElementById('chat-window');
+    chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
+    if (chat.style.display === 'flex') {
+        document.getElementById('chat-input').focus();
+    }
+}
+
+function askQuestion(q) {
+    document.getElementById('chat-input').value = q;
+    sendMessage();
+}
+
+function addMessage(text, isUser = false) {
+    const container = document.getElementById('chat-messages');
+    const msg = document.createElement('div');
+    msg.className = `message ${isUser ? 'user' : 'ai'}`;
+    msg.innerHTML = text;
+    container.appendChild(msg);
+    container.scrollTop = container.scrollHeight;
+}
+
+function sendMessage() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    if (!text) return;
+
+    addMessage(text, true);
+    input.value = '';
+
+    setTimeout(() => {
+        const response = generateAIResponse(text);
+        addMessage(response);
+    }, 600);
+}
+
+function generateAIResponse(query) {
+    query = query.toLowerCase();
+    const t = translations[currentLang];
+    
+    const deadItems = data.filter(x => x.status === 'dead');
+    const totalDeadValue = deadItems.reduce((s, x) => s + (x.qty * x.price), 0);
+    
+    // Keywords for matching (multilingual)
+    const matchesDead = query.includes('呆滯') || query.includes('風險') || query.includes('dead') || query.includes('risk') || query.includes('滞留') || query.includes('불용');
+    const matchesArea = query.includes('區域') || query.includes('哪一區') || query.includes('area') || query.includes('region') || query.includes('地域') || query.includes('지역');
+    const matchesAdvice = query.includes('建議') || query.includes('優化') || query.includes('怎麼辦') || query.includes('advice') || query.includes('tips') || query.includes('アドバイス') || query.includes('제안');
+    const matchesGreet = query.includes('你好') || query.includes('hello') || query.includes('hi') || query.includes('こんにちは') || query.includes('안녕하세요');
+
+    if (matchesDead) {
+        if (deadItems.length === 0) return t.noDeadItems;
+        let topDead = [...deadItems].sort((a,b) => (b.qty * b.price) - (a.qty * a.price)).slice(0, 3);
+        let list = topDead.map(x => `<li><b>${x.item}</b> (${x.area}): $${Math.round(x.qty * x.price).toLocaleString()}</li>`).join('');
+        return `${t.deadItemsFound(deadItems.length, totalDeadValue)}<br><br>${t.topDeadHeader}<ul>${list}</ul>${t.deadAdvice}`;
+    }
+    
+    if (matchesArea) {
+        const areaGroup = {};
+        data.forEach(x => areaGroup[x.area] = (areaGroup[x.area] || 0) + x.qty);
+        const topArea = Object.entries(areaGroup).sort((a,b) => b[1] - a[1])[0];
+        return t.topArea(topArea[0], topArea[1]);
+    }
+    
+    if (matchesAdvice) {
+        return t.advice(deadItems.length);
+    }
+
+    if (matchesGreet) {
+        return t.greeting;
+    }
+
+    return t.fallback(totalDeadValue);
+}
+
+// 頁面初次加載：必須等 translations 定義後才執行 render，否則會 ReferenceError
+(function bootDashboard(){
+    if (document.getElementById('lang-select')) {
+        currentLang = document.getElementById('lang-select').value;
+    }
+    initArea();
+    initCharts();
+    render();
+})();
 </script>
 </body>
 </html>
+
